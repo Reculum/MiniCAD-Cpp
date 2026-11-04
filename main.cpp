@@ -1,5 +1,6 @@
 
 #include "raylib.h"
+#include "raymath.h"
 
 int main()
 {
@@ -12,19 +13,19 @@ int main()
     // Camera
     Camera3D camera = { 0 };
 
-    camera.position = { 5.0f, 5.0f, 5.0f };
-    camera.target = { 0.0f, 0.0f, 0.0f };
-    camera.up = { 0.0f, 1.0f, 0.0f };
+    camera.position = (Vector3){ 5.0f, 5.0f, 5.0f };
+    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera.fovy = 45.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
     SetTargetFPS(60);
 
+	Vector3 cubeCenter = {0.0f, 0.0f, 0.0f};
+	Vector3 offset = {1.0f/60, 1.0f/60, 1.0f/60};
+
     // Main loop
     while (!WindowShouldClose()){
-		
-        // Update
-        UpdateCamera(&camera, CAMERA_ORBITAL);
 
         // Draw
         BeginDrawing();
@@ -33,42 +34,24 @@ int main()
 
             BeginMode3D(camera);
 
-                // Reference grid
-                DrawGrid(20, 1.0f);
-
-                // Coordinate axes
-                DrawLine3D(
-                    { 0, 0, 0 },
-                    { 3, 0, 0 },
-                    RED
-                );
-
-                DrawLine3D(
-                    { 0, 0, 0 },
-                    { 0, 3, 0 },
-                    GREEN
-                );
-
-                DrawLine3D(
-                    { 0, 0, 0 },
-                    { 0, 0, 3 },
-                    BLUE
-                );
-
                 // Reference object
                 DrawCube(
-                    { 0, 0.5f, 0 },
+                    cubeCenter,
                     1.0f, 1.0f, 1.0f,
                     SKYBLUE
                 );
 
                 DrawCubeWires(
-                    { 0, 0.5f, 0 },
+                    cubeCenter,
                     1.0f, 1.0f, 1.0f,
                     DARKBLUE
                 );
 
+				DrawGrid(10, 1.0f);
+
             EndMode3D();
+
+			cubeCenter = Vector3Add(cubeCenter, offset);
 
             DrawText("3D NURBS Viewer", 20, 20, 25, DARKGRAY);
             DrawText("Mouse: orbit camera", 20, 55, 18, GRAY);
