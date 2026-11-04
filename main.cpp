@@ -22,12 +22,13 @@ int main()
     SetTargetFPS(60);
 
 	Vector3 cubeCenter = {0.0f, 0.0f, 0.0f};
-	Vector3 offset = {1.0f/60, 1.0f/60, 1.0f/60};
+	Vector3 origin = {0.0f, 0.0f, 0.0f};
 
     // Main loop
     while (!WindowShouldClose()){
 
-        // Draw
+		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}	
+
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
@@ -47,15 +48,18 @@ int main()
                     DARKBLUE
                 );
 
+				//x-axis
+				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)BLACK);				
+				//y-axis
+				DrawLine3D(origin, (Vector3){0.0f, 5.0f, 0.0f}, (Color)BLACK);
+				//z-axis
+				DrawLine3D(origin, (Vector3){0.0f, 0.0f, 5.0f}, (Color)BLACK);
+				
 				DrawGrid(10, 1.0f);
 
             EndMode3D();
 
-			cubeCenter = Vector3Add(cubeCenter, offset);
-
-            DrawText("3D NURBS Viewer", 20, 20, 25, DARKGRAY);
             DrawText("Mouse: orbit camera", 20, 55, 18, GRAY);
-            DrawFPS(20, screenHeight - 30);
 
         EndDrawing();
     }
