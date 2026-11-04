@@ -1,6 +1,6 @@
 
 #include "raylib.h"
-#include "raymath.h"
+#include <cstring>
 
 int main()
 {
@@ -19,10 +19,40 @@ int main()
     camera.fovy = 45.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
+	Vector3 origin = (Vector3){0.0f, 0.0f, 0.0f};
+
     SetTargetFPS(60);
 
-	Vector3 cubeCenter = {0.0f, 0.0f, 0.0f};
-	Vector3 origin = {0.0f, 0.0f, 0.0f};
+	// Create mesh
+    Mesh mesh = { 0 };
+
+    mesh.vertexCount = 4;
+    mesh.triangleCount = 2;
+
+    mesh.vertices = (float*) MemAlloc(12 * sizeof(float));
+
+    mesh.indices = (unsigned short*) MemAlloc(6 * sizeof(unsigned short));
+
+    float vertices[] = {
+        0, 0, 0,
+        1, 0, 0,
+        1, 1, 0,
+        0, 1, 0
+    };
+
+    unsigned short indices[] = {
+        0, 1, 2,
+        0, 2, 3
+    };
+
+    memcpy(mesh.vertices, vertices, sizeof(vertices));
+    memcpy(mesh.indices, indices, sizeof(indices));
+
+    // Upload to GPU
+    UploadMesh(&mesh, false);
+
+    // Create model
+    Model model = LoadModelFromMesh(mesh);
 
     // Main loop
     while (!WindowShouldClose()){
@@ -35,18 +65,7 @@ int main()
 
             BeginMode3D(camera);
 
-                // Reference object
-                DrawCube(
-                    cubeCenter,
-                    1.0f, 1.0f, 1.0f,
-                    SKYBLUE
-                );
-
-                DrawCubeWires(
-                    cubeCenter,
-                    1.0f, 1.0f, 1.0f,
-                    DARKBLUE
-                );
+				DrawModel(model, origin, 1.0, (Color) BLUE);                
 
 				//x-axis
 				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)BLACK);				
@@ -54,7 +73,7 @@ int main()
 				DrawLine3D(origin, (Vector3){0.0f, 5.0f, 0.0f}, (Color)BLACK);
 				//z-axis
 				DrawLine3D(origin, (Vector3){0.0f, 0.0f, 5.0f}, (Color)BLACK);
-				
+
 				DrawGrid(10, 1.0f);
 
             EndMode3D();
