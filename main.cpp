@@ -4,42 +4,79 @@
 int main()
 {
     // Initialization
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 1000;
+    const int screenHeight = 700;
 
-    InitWindow(screenWidth, screenHeight, "My first raylib application");
+    InitWindow(screenWidth, screenHeight, "MiniCAD - NURBS Visualizer");
+
+    // Camera
+    Camera3D camera = { 0 };
+
+    camera.position = { 5.0f, 5.0f, 5.0f };
+    camera.target = { 0.0f, 0.0f, 0.0f };
+    camera.up = { 0.0f, 1.0f, 0.0f };
+    camera.fovy = 45.0f;
+    camera.projection = CAMERA_PERSPECTIVE;
 
     SetTargetFPS(60);
 
-    Vector2 circlePosition = {
-        screenWidth / 2.0f,
-        screenHeight / 2.0f
-    };
-
-    // Main game loop
-    while (!WindowShouldClose())
-    {
+    // Main loop
+    while (!WindowShouldClose()){
+		
         // Update
-        if (IsKeyDown(KEY_RIGHT)) circlePosition.x += 3.0f;
-        if (IsKeyDown(KEY_LEFT))  circlePosition.x -= 3.0f;
-        if (IsKeyDown(KEY_UP))    circlePosition.y -= 3.0f;
-        if (IsKeyDown(KEY_DOWN))  circlePosition.y += 3.0f;
+        UpdateCamera(&camera, CAMERA_ORBITAL);
 
         // Draw
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
 
-            DrawText("Hello, raylib!", 20, 20, 30, DARKGRAY);
+            BeginMode3D(camera);
 
-            DrawCircleV(circlePosition, 30, BLUE);
+                // Reference grid
+                DrawGrid(20, 1.0f);
 
-            DrawFPS(10, screenHeight - 30);
+                // Coordinate axes
+                DrawLine3D(
+                    { 0, 0, 0 },
+                    { 3, 0, 0 },
+                    RED
+                );
+
+                DrawLine3D(
+                    { 0, 0, 0 },
+                    { 0, 3, 0 },
+                    GREEN
+                );
+
+                DrawLine3D(
+                    { 0, 0, 0 },
+                    { 0, 0, 3 },
+                    BLUE
+                );
+
+                // Reference object
+                DrawCube(
+                    { 0, 0.5f, 0 },
+                    1.0f, 1.0f, 1.0f,
+                    SKYBLUE
+                );
+
+                DrawCubeWires(
+                    { 0, 0.5f, 0 },
+                    1.0f, 1.0f, 1.0f,
+                    DARKBLUE
+                );
+
+            EndMode3D();
+
+            DrawText("3D NURBS Viewer", 20, 20, 25, DARKGRAY);
+            DrawText("Mouse: orbit camera", 20, 55, 18, GRAY);
+            DrawFPS(20, screenHeight - 30);
 
         EndDrawing();
     }
 
-    // Cleanup
     CloseWindow();
 
     return 0;
