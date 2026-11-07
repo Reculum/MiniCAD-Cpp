@@ -156,4 +156,14 @@ class PointArrayQueue{
 			
 		}
 
+
+		void Plot(){
+
+			for (int k = 0; k < size; k++){
+				TotalPoints[k].Plot();
+			}
+
+		}
+
+
 };

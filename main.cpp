@@ -1,8 +1,6 @@
 
 #include "raylib.h"
-#include "ControlPoint.h"
-#include <array>
-#include <cstring>
+#include "ArrayQueue.h"
 
 int main()
 {
@@ -25,8 +23,7 @@ int main()
 
     SetTargetFPS(60);
 
-	ControlPoint3D p = ControlPoint3D();
-
+	PointArrayQueue ActivePoints = PointArrayQueue();
 	
 
     // Main loop
@@ -42,16 +39,20 @@ int main()
             BeginMode3D(camera);
 			
 				if (IsKeyPressed(KEY_P)){
-					p.ControlPointFromInput();					
+
+					ControlPoint3D p = ControlPoint3D();
+					p.ControlPointFromInput();
+					ActivePoints.Append(p);
 				}
 
-				p.Plot();
+				ActivePoints.Plot();
+
 				//x-axis
-				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)BLACK);				
+				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)RED);				
 				//y-axis
-				//DrawLine3D(origin, (Vector3){0.0f, 5.0f, 0.0f}, (Color)BLACK);
+				DrawLine3D(origin, (Vector3){0.0f, 5.0f, 0.0f}, (Color)BLUE);
 				//z-axis
-				DrawLine3D(origin, (Vector3){0.0f, 0.0f, 5.0f}, (Color)BLACK);
+				DrawLine3D(origin, (Vector3){0.0f, 0.0f, 5.0f}, (Color)GREEN);
 
 				DrawGrid(10, 1.0f);
 

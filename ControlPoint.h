@@ -12,7 +12,7 @@ class ControlPoint3D{
 
 	public:
 
-		ControlPoint3D(){coords.x = 0.0f; coords.z = 0.0f; coords.y = 0.0f; transparent = false;}
+		ControlPoint3D(){coords.x = 0.0f; coords.z = 0.0f; coords.y = 0.0f; transparent = true;}
 		ControlPoint3D(float x, float y, float z){coords.x = x; coords.z = y; coords.y = z; transparent = false;}
 
 		void Plot(){
@@ -35,9 +35,15 @@ class ControlPoint3D{
 				std::cin >> values[k];
 			}
 
+			std::cout << std::endl;
+			std::cout << std::endl;
+			std::cout << std::endl;
+
 			coords.x = values[0];
 			coords.z = values[1];
 			coords.y = values[2];
+			transparent = false;
+
 		}
 
 
