@@ -1,5 +1,7 @@
 
 #include "raylib.h"
+#include "ControlPoint.h"
+#include <array>
 #include <cstring>
 
 int main()
@@ -23,50 +25,27 @@ int main()
 
     SetTargetFPS(60);
 
-	// Create mesh
-    Mesh mesh = { 0 };
+	ControlPoint3D p = ControlPoint3D();
 
-    mesh.vertexCount = 4;
-    mesh.triangleCount = 2;
-
-    mesh.vertices = (float*) MemAlloc(12 * sizeof(float));
-
-    mesh.indices = (unsigned short*) MemAlloc(6 * sizeof(unsigned short));
-
-    float vertices[] = {
-        0, 0, 0,
-        1, 0, 0,
-        1, 1, 0,
-        0, 1, 0
-    };
-
-    unsigned short indices[] = {
-        0, 1, 2,
-        0, 2, 3
-    };
-
-    memcpy(mesh.vertices, vertices, sizeof(vertices));
-    memcpy(mesh.indices, indices, sizeof(indices));
-
-    // Upload to GPU
-    UploadMesh(&mesh, false);
-
-    // Create model
-    Model model = LoadModelFromMesh(mesh);
+	
 
     // Main loop
     while (!WindowShouldClose()){
 
-		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}	
+		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}
+
 
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
 
             BeginMode3D(camera);
+			
+				if (IsKeyPressed(KEY_P)){
+					p.ControlPointFromInput();					
+				}
 
-				DrawModel(model, origin, 1.0, (Color) BLUE);                
-
+				p.Plot();
 				//x-axis
 				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)BLACK);				
 				//y-axis
