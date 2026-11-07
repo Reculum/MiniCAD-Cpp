@@ -49,7 +49,7 @@ int main()
 				//x-axis
 				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)BLACK);				
 				//y-axis
-				DrawLine3D(origin, (Vector3){0.0f, 5.0f, 0.0f}, (Color)BLACK);
+				//DrawLine3D(origin, (Vector3){0.0f, 5.0f, 0.0f}, (Color)BLACK);
 				//z-axis
 				DrawLine3D(origin, (Vector3){0.0f, 0.0f, 5.0f}, (Color)BLACK);
 

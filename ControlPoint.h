@@ -8,13 +8,21 @@ class ControlPoint3D{
 	protected:
 
 		Vector3 coords;
+		bool transparent;
 
 	public:
 
-		ControlPoint3D(){coords.x = 0.0f; coords.y = 0.0f; coords.z = 0.0f;}
-		ControlPoint3D(float x, float y, float z){coords.x = x; coords.y = y; coords.z = z;}
+		ControlPoint3D(){coords.x = 0.0f; coords.z = 0.0f; coords.y = 0.0f; transparent = false;}
+		ControlPoint3D(float x, float y, float z){coords.x = x; coords.z = y; coords.y = z; transparent = false;}
 
-		void Plot(){DrawSphere(coords, 0.05f, (Color) BLACK);}
+		void Plot(){
+			if (!transparent){
+				DrawSphere(coords, 0.05f, (Color) BLACK);
+			}
+		}
+
+		void MakeInvisible(){transparent = true;}
+		bool IsVisible(){return !transparent;}
 
 		void ControlPointFromInput(){
 
@@ -28,8 +36,8 @@ class ControlPoint3D{
 			}
 
 			coords.x = values[0];
-			coords.y = values[1];
-			coords.z = values[2];
+			coords.z = values[1];
+			coords.y = values[2];
 		}
 
 
