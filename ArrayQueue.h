@@ -1,4 +1,5 @@
 
+#pragma once
 #include "ControlPoint.h"
 
 class IntQueue {
@@ -104,6 +105,10 @@ class PointArrayQueue{
 		PointArrayQueue& operator=(const PointArrayQueue&) = delete;
 
 		~PointArrayQueue() {delete[] TotalPoints;}
+
+		int getSize(){return size;}
+
+		ControlPoint3D& getItem(int k){return TotalPoints[k];}
 		
 		void Append(ControlPoint3D& p){
 

@@ -1,5 +1,7 @@
 
 #include "raylib.h"
+
+#include "interactions.h"
 #include "ArrayQueue.h"
 
 int main()
@@ -24,26 +26,23 @@ int main()
     SetTargetFPS(60);
 
 	PointArrayQueue ActivePoints = PointArrayQueue();
+	PointArrayQueue SelectedPoints = PointArrayQueue();
 	
 
     // Main loop
     while (!WindowShouldClose()){
 
-		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}
-
+		MoveCameraEvent(camera);
+		CreatePointEvent(ActivePoints);
+		SelectPointEvent(SelectedPoints, ActivePoints, camera);
 
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
 
             BeginMode3D(camera);
-			
-				if (IsKeyPressed(KEY_P)){
 
-					ControlPoint3D p = ControlPoint3D();
-					p.ControlPointFromInput();
-					ActivePoints.Append(p);
-				}
+				//plot all the Active Points
 
 				ActivePoints.Plot();
 
