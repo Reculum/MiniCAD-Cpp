@@ -26,7 +26,6 @@ int main()
     SetTargetFPS(60);
 
 	PointArrayQueue ActivePoints = PointArrayQueue();
-	PointArrayQueue SelectedPoints = PointArrayQueue();
 	
 
     // Main loop
@@ -34,7 +33,7 @@ int main()
 
 		MoveCameraEvent(camera);
 		CreatePointEvent(ActivePoints);
-		SelectPointEvent(SelectedPoints, ActivePoints, camera);
+		SelectPointEvent(ActivePoints, camera);
 
         BeginDrawing();
 

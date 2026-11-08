@@ -5,4 +5,4 @@
 
 void MoveCameraEvent(Camera& camera);
 void CreatePointEvent(PointArrayQueue& ActivePoints);
-void SelectPointEvent(PointArrayQueue& SelectedPoints, PointArrayQueue& ActivePoints, Camera& camera);
+void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera);

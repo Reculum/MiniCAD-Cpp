@@ -35,6 +35,8 @@ class ControlPoint3D{
 		}
 
 		void Select(){selected = true;}
+		void Unselect(){selected = false;}
+
 		bool IsSelected(){return selected;}
 
 		void MakeInvisible(){transparent = true;}

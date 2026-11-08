@@ -15,7 +15,7 @@ void CreatePointEvent(PointArrayQueue& ActivePoints){
 	}
 }
 
-void SelectPointEvent(PointArrayQueue& SelectedPoints, PointArrayQueue& ActivePoints, Camera& camera){
+void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera){
 
 	if ( (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
 		Vector2 mousePos = GetMousePosition();
@@ -39,7 +39,7 @@ void SelectPointEvent(PointArrayQueue& SelectedPoints, PointArrayQueue& ActivePo
 				bool PointHit = tmpCollision.hit;
 
 				//if we get a hit and the distance is smaller than the one previously recorded
-				if (PointHit && (tmpCollision.distance < minDist) && (!tmpPoint.IsSelected())){ clstIdx = k; minDist = tmpCollision.distance;}
+				if (PointHit && (tmpCollision.distance < minDist)){ clstIdx = k; minDist = tmpCollision.distance;}
 				
 			}
 
@@ -49,10 +49,10 @@ void SelectPointEvent(PointArrayQueue& SelectedPoints, PointArrayQueue& ActivePo
 
 		if (clstIdx >= 0){
 			ControlPoint3D& selectedPoint = ActivePoints.getItem(clstIdx);
-			selectedPoint.Select();
-
-			//warning: Append copies the result!
-			SelectedPoints.Append(selectedPoint);
+			
+			if (selectedPoint.IsSelected()){selectedPoint.Unselect();}
+			else{selectedPoint.Select();}		
+			
 		}
 
 	}
