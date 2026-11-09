@@ -42,11 +42,7 @@ int main()
 
             BeginMode3D(camera);
 
-				MoveSelectedPoints(ActivePoints, camera);
-
-				//plot all the Active Points
-
-				ActivePoints.Plot();
+			//first, we draw the opaque objects
 
 				//x-axis
 				DrawLine3D(origin, (Vector3){5.0f, 0.0f, 0.0f}, (Color)RED);				
@@ -55,7 +51,15 @@ int main()
 				//z-axis
 				DrawLine3D(origin, (Vector3){0.0f, 0.0f, 5.0f}, (Color)GREEN);
 
+				//std-grid
 				DrawGrid(10, 1.0f);
+
+				//all the control points, so far
+				ActivePoints.Plot();
+
+			//then we can process everything that's transparent
+
+				MoveSelectedPoints(ActivePoints, camera);	
 
             EndMode3D();
 
