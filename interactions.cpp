@@ -6,6 +6,14 @@
 #include <iostream>
 #include <vector>
 
+struct MovingTracker{
+	bool ComputeXY = false;
+	bool ComputeXZ = false;
+};
+
+MovingTracker GLOBAL_MOVING_TRACKER;
+
+
 
 void MoveCameraEvent(Camera& camera){if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}}
 
@@ -77,7 +85,7 @@ void RemoveSelectedPoints(PointArrayQueue& ActivePoints){
 
 }
 
-ControlPoint3D ComputeMouseRayXZintersection(Ray MouseRay, ControlPoint3D p){
+Vector3 ComputeMouseRayXZintersection(Ray MouseRay, ControlPoint3D p){
 
 	Vector3 RaydDir = MouseRay.direction;
 	Vector3 RayPos = MouseRay.position;
@@ -87,20 +95,44 @@ ControlPoint3D ComputeMouseRayXZintersection(Ray MouseRay, ControlPoint3D p){
 	float RayY = RayPos.y;
 	float RayDirY =  RaydDir.y;
 
-	if (fabsf(RayDirY) < 1e-6f){return p;};
+	if (fabsf(RayDirY) < 1e-6f){return pCoords;};
 
 	float t = (pY - RayY) / RayDirY;
 
-	if (t < 0.0f){return p;};
+	if (t < 0.0f){return pCoords;};
 
 	Vector3 interCoords = RayPos + t * RaydDir;
 
-	float interX = interCoords.x;
-	float interZ = interCoords.z;
+	//float interX = interCoords.x;
+	//float interZ = interCoords.z;
+	//float interY = interCoords.y;
 
-	float interY = interCoords.y;
+	return interCoords;
+}
 
-	return ControlPoint3D(interX, interZ, interY);
+Vector3 ComputeMouseRayXYintersection(Ray MouseRay, ControlPoint3D p){
+
+	Vector3 RaydDir = MouseRay.direction;
+	Vector3 RayPos = MouseRay.position;
+	Vector3 pCoords = p.getCoords();
+
+	float pZ = pCoords.z;
+	float RayZ = RayPos.z;
+	float RayDirZ =  RaydDir.z;
+
+	if (fabsf(RayDirZ) < 1e-6f){return pCoords;};
+
+	float t = (pZ - RayZ) / RayDirZ;
+
+	if (t < 0.0f){return pCoords;};
+
+	Vector3 interCoords = RayPos + t * RaydDir;
+
+	//float interX = interCoords.x;
+	//float interZ = interCoords.z;
+	//float interY = interCoords.y;
+
+	return interCoords;
 }
 
 
@@ -113,16 +145,41 @@ void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera){
 		if (indexesToBeMoved.size() < 1){std::cout << "no points to be moved!!!" << std::endl; return;}
 		if (indexesToBeMoved.size() >= 2){std::cout << "you are trying to move too many points!!!" << std::endl; return;}
 
-		ControlPoint3D p = ActivePoints.getItem( indexesToBeMoved[0] );
+		ControlPoint3D& p = ActivePoints.getItem( indexesToBeMoved[0] );
 		Vector2 mousePos = GetMousePosition();
 		Ray mouseRay = GetScreenToWorldRay(mousePos, camera);
 
-		ControlPoint3D newPos = ComputeMouseRayXZintersection(mouseRay, p);
+		Vector3 newPos;
 
-		newPos.Plot();
+		if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT)){
+			
+			GLOBAL_MOVING_TRACKER.ComputeXY = false;
+			GLOBAL_MOVING_TRACKER.ComputeXZ = true;
+		}
+		if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)){
+			
+			GLOBAL_MOVING_TRACKER.ComputeXY = true;
+			GLOBAL_MOVING_TRACKER.ComputeXZ = false;
+		}
 
+		if (GLOBAL_MOVING_TRACKER.ComputeXY){newPos = ComputeMouseRayXYintersection(mouseRay, p);}
+		if (GLOBAL_MOVING_TRACKER.ComputeXZ){newPos = ComputeMouseRayXZintersection(mouseRay, p);}
 
+		if (GLOBAL_MOVING_TRACKER.ComputeXY || GLOBAL_MOVING_TRACKER.ComputeXZ){
+
+			DrawSphere(newPos, 0.05f, (Color) RED);
+
+			if (IsKeyPressed(KEY_ENTER)){
+				p.Move(newPos);
+			}
+		}		
+
+	}
+	else{
+		GLOBAL_MOVING_TRACKER.ComputeXY = false;
+		GLOBAL_MOVING_TRACKER.ComputeXZ = false;
 	}
 
 
 }
+

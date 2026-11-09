@@ -34,6 +34,8 @@ class ControlPoint3D{
 			}
 		}
 
+		void Move(Vector3 newPos){coords = newPos;}
+
 		void Select(){selected = true;}
 		void Unselect(){selected = false;}
 
