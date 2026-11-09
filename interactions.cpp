@@ -9,6 +9,10 @@
 struct MovingTracker{
 	bool ComputeXY = false;
 	bool ComputeXZ = false;
+	Vector3 A;
+	Vector3 B;
+	Vector3 C;
+	Vector3 D;
 };
 
 MovingTracker GLOBAL_MOVING_TRACKER;
@@ -140,6 +144,8 @@ void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera){
 
 	if (IsKeyDown(KEY_M)){
 
+		float halfSize = 5.0f;
+
 		std::vector<int> indexesToBeMoved = ActivePoints.FindSelectedPoints();
 
 		if (indexesToBeMoved.size() < 1){std::cout << "no points to be moved!!!" << std::endl; return;}
@@ -150,29 +156,47 @@ void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera){
 		Ray mouseRay = GetScreenToWorldRay(mousePos, camera);
 
 		Vector3 newPos;
+		float PlaneCenterX = p.getCoords().x;
+		float PlaneCenterZ = p.getCoords().z;
+		float PlaneCenterY = p.getCoords().y;
 
 		if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT)){
 			
 			GLOBAL_MOVING_TRACKER.ComputeXY = false;
 			GLOBAL_MOVING_TRACKER.ComputeXZ = true;
+
+			GLOBAL_MOVING_TRACKER.A = {PlaneCenterX + halfSize, PlaneCenterY, PlaneCenterZ - halfSize};
+			GLOBAL_MOVING_TRACKER.B = {PlaneCenterX + halfSize, PlaneCenterY, PlaneCenterZ + halfSize};
+			GLOBAL_MOVING_TRACKER.C = {PlaneCenterX - halfSize, PlaneCenterY, PlaneCenterZ + halfSize};
+			GLOBAL_MOVING_TRACKER.D = {PlaneCenterX - halfSize, PlaneCenterY, PlaneCenterZ - halfSize};
 		}
+
+
 		if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)){
 			
 			GLOBAL_MOVING_TRACKER.ComputeXY = true;
 			GLOBAL_MOVING_TRACKER.ComputeXZ = false;
+
+			GLOBAL_MOVING_TRACKER.A = {PlaneCenterX + halfSize, PlaneCenterY + halfSize, PlaneCenterZ};
+			GLOBAL_MOVING_TRACKER.B = {PlaneCenterX + halfSize, PlaneCenterY - halfSize, PlaneCenterZ};
+			GLOBAL_MOVING_TRACKER.C = {PlaneCenterX - halfSize, PlaneCenterY - halfSize, PlaneCenterZ};
+			GLOBAL_MOVING_TRACKER.D = {PlaneCenterX - halfSize, PlaneCenterY + halfSize, PlaneCenterZ};
 		}
 
 		if (GLOBAL_MOVING_TRACKER.ComputeXY){newPos = ComputeMouseRayXYintersection(mouseRay, p);}
 		if (GLOBAL_MOVING_TRACKER.ComputeXZ){newPos = ComputeMouseRayXZintersection(mouseRay, p);}
 
-		if (GLOBAL_MOVING_TRACKER.ComputeXY || GLOBAL_MOVING_TRACKER.ComputeXZ){
+		if (GLOBAL_MOVING_TRACKER.ComputeXZ || GLOBAL_MOVING_TRACKER.ComputeXY){
+
+			DrawTriangle3D(GLOBAL_MOVING_TRACKER.C, GLOBAL_MOVING_TRACKER.B, GLOBAL_MOVING_TRACKER.D, Fade(SKYBLUE, 0.2f));
+			DrawTriangle3D(GLOBAL_MOVING_TRACKER.A, GLOBAL_MOVING_TRACKER.D, GLOBAL_MOVING_TRACKER.B, Fade(SKYBLUE, 0.2f));
 
 			DrawSphere(newPos, 0.05f, (Color) RED);
 
 			if (IsKeyPressed(KEY_ENTER)){
 				p.Move(newPos);
 			}
-		}		
+		}
 
 	}
 	else{

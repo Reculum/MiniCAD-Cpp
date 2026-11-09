@@ -18,7 +18,7 @@ class ControlPoint3D{
 			transparent = true;
 			selected = false;
 		}
-		ControlPoint3D(float x, float y, float z){coords.x = x; coords.z = y; coords.y = z;
+		ControlPoint3D(float x, float z, float y){coords.x = x; coords.z = z; coords.y = y;
 			transparent = false;
 			selected = false;
 		}
