@@ -61,3 +61,26 @@ void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera){
 
 }
 
+void RemoveSelectedPoints(PointArrayQueue& ActivePoints){
+
+	if (IsKeyPressed(KEY_DELETE)){
+
+		int s = ActivePoints.getSize();
+
+		int indexesToBeDeleted[s];
+		int memIndx = 0;
+
+		for(int k = 0; k < s; k++){
+
+			if ( ActivePoints.getItem(k).IsSelected() ){
+				indexesToBeDeleted[memIndx] = k;
+				memIndx += 1;
+			}
+		}
+
+		for (int k = 0; k < memIndx; k++){
+			ActivePoints.RemoveItem(indexesToBeDeleted[k]);
+		}
+	}
+
+}

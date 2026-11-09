@@ -109,6 +109,17 @@ class PointArrayQueue{
 		int getSize(){return size;}
 
 		ControlPoint3D& getItem(int k){return TotalPoints[k];}
+
+		void RemoveItem(int k){
+
+			ControlPoint3D& p = getItem(k);
+
+			p.MakeInvisible();
+			p.Unselect();
+			FreeIndexes.Enqueue(k);
+			FreeSpaces += 1;
+		
+		}
 		
 		void Append(ControlPoint3D& p){
 
@@ -154,6 +165,7 @@ class PointArrayQueue{
 			if (FoundPoint){
 
 				FreeIndexes.Enqueue(k);
+				p.Unselect();
 				p.MakeInvisible();
 				FreeSpaces += 1;
 			}

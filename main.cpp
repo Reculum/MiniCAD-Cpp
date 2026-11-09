@@ -34,6 +34,7 @@ int main()
 		MoveCameraEvent(camera);
 		CreatePointEvent(ActivePoints);
 		SelectPointEvent(ActivePoints, camera);
+		RemoveSelectedPoints(ActivePoints);
 
         BeginDrawing();
 
