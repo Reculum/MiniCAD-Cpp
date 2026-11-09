@@ -1,6 +1,7 @@
 
 #pragma once
 #include "ControlPoint.h"
+#include <vector>
 
 class IntQueue {
 
@@ -142,6 +143,8 @@ class PointArrayQueue{
 			}
 
 			int nextAvaiableIdx = FreeIndexes.Dequeue();
+
+			//warning: this is a copy!
 			TotalPoints[nextAvaiableIdx] = p;
 			FreeSpaces -= 1;
 
@@ -182,5 +185,18 @@ class PointArrayQueue{
 
 		}
 
+		std::vector<int> FindSelectedPoints(){
 
+			std::vector<int> indexesSelected;
+
+			for(int k = 0; k < size; k++){
+
+				if ( getItem(k).IsSelected() ){
+					indexesSelected.push_back(k);
+				}
+			}
+
+			return indexesSelected;
+
+		}
 };

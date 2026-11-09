@@ -42,6 +42,8 @@ int main()
 
             BeginMode3D(camera);
 
+				MoveSelectedPoints(ActivePoints, camera);
+
 				//plot all the Active Points
 
 				ActivePoints.Plot();
