@@ -67,14 +67,14 @@ class NURBS_Curve{
 
 		if (u == 0){return degree;}
 
-		int i = 0;
-		int j = n + degree + 1;
+		int i = degree;
+		int j = n + 1;
 
 		while (j - i > 1){
 
 			int m = (i + j)/2;
 
-			if (u > Nodes[m]){i = m;}
+			if (u >= Nodes[m]){i = m;}
 			else{j = m;}
 
 		}
