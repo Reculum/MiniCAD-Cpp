@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 #include <array>
+#include <stdexcept>
 
 
 
@@ -28,10 +29,15 @@ class NURBS_Curve{
 		std::vector<int> SelectedPoints = ActivePoints.FindSelectedPoints();
 		n = SelectedPoints.size() - 1;
 
+		if (p < 0 || SelectedPoints.size() < static_cast<size_t>(p + 1)){
+			throw std::invalid_argument("Invalid degree or insufficient control points");
+		}
+    	
+
 
 		weights = new float[n + 1];
 		CtrlPointsPointers.reserve(n + 1);
-		Nodes.reserve(n + 1);
+		Nodes.reserve(n + degree + 2);
 
 		for (int k = 0; k < n + 1; k++){
 
@@ -47,6 +53,9 @@ class NURBS_Curve{
 		for (int k = n + 1; k <= m; k++){Nodes.push_back(1.0f);}
 		
 	}
+
+	NURBS_Curve(const NURBS_Curve&) = delete;
+	NURBS_Curve& operator=(const NURBS_Curve&) = delete;
 
 	~NURBS_Curve() {
     	delete[] weights;
@@ -111,10 +120,7 @@ class NURBS_Curve{
 				else{l = 0.0f;}
 
 				if (rightDen != 0.0f){r = (Nodes[i + p + 1] - u) / rightDen;}
-				else{r = 0.0f;}
-
-				l = (u - Nodes[i]) / (Nodes[i + p] - Nodes[i]);
-				r = (Nodes[i + p + 1] - u) / (Nodes[i + 1 + p] - Nodes[i + 1]);			
+				else{r = 0.0f;}		
 
 				values[i][p] = l * values[i][p - 1] + r * values[i + 1][p - 1];
 			}
@@ -123,7 +129,7 @@ class NURBS_Curve{
 		Vector3 ret = {0.0f, 0.0f, 0.0f};
 		Vector3 tmp;
 
-		for (int i = 0; i < n + 1; i++){
+		for (int i = std::max(0, z - degree); i <= z; i++){
 
 			tmp = CtrlPointsPointers[i] -> getCoords();
 
@@ -134,7 +140,7 @@ class NURBS_Curve{
 		for (int i = 0; i < n + 1; i++){delete[] values[i];}
 		delete[] values;
 
-		
+
 		return ret;	
 
 	}
