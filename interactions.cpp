@@ -6,6 +6,11 @@
 #include "curveGenerator.h"
 #include <iostream>
 #include <vector>
+#include <random>
+
+std::random_device rd;
+std::mt19937 gen(rd());
+std::normal_distribution<float> StdNormDist(0.0f, 1.0f);
 
 struct MovingTracker{
 	bool ComputeXY = false;
@@ -24,11 +29,17 @@ void MoveCameraEvent(Camera& camera){if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){U
 
 void CreatePointEvent(PointArrayQueue& ActivePoints){
 	
-	if (IsKeyPressed(KEY_P)){
+	if (IsKeyPressed(KEY_P) && !(IsKeyDown(KEY_LEFT_SHIFT))){
 				ControlPoint3D p = ControlPoint3D();
 				p.ControlPointFromInput();
 				ActivePoints.Append(p);
 	}
+
+	if (IsKeyPressed(KEY_P) && (IsKeyDown(KEY_LEFT_SHIFT))){
+				ControlPoint3D p = ControlPoint3D(StdNormDist(gen), StdNormDist(gen), StdNormDist(gen));
+				ActivePoints.Append(p);
+	}
+
 }
 
 void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera){

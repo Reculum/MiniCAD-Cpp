@@ -37,7 +37,7 @@ int main()
 		CreatePointEvent(ActivePoints);
 		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
-		CreateNurbsCurve(ActivePoints, activeNurb, 1);
+		CreateNurbsCurve(ActivePoints, activeNurb, 2);
 
         BeginDrawing();
 

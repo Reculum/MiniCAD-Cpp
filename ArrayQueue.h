@@ -138,8 +138,9 @@ class PointArrayQueue{
 				delete[] TotalPoints;
 
 				TotalPoints = newTotalPoints;
-				size *= 2;
-				FreeSpaces = size;			
+				FreeSpaces = size;
+				
+				size *= 2;			
 			}
 
 			int nextAvaiableIdx = FreeIndexes.Dequeue();

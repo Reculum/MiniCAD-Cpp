@@ -36,6 +36,7 @@ class ControlPoint3D{
 		}
 
 		void Move(Vector3 newPos){coords = newPos; TimesMoved += 1;}
+		
 
 		int getTimesMoved(){return TimesMoved;}
 		void Select(){selected = true;}
