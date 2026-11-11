@@ -96,10 +96,10 @@ class NURBS_Curve{
 		//find the starting interval
 		int z = FindInterval(u);
 
+		//an additional last row of zeros is needed!
+		float** values = new float*[n + 2];
 
-		float** values = new float*[n + 1];
-
-		for (int i = 0; i < n + 1; i++){			
+		for (int i = 0; i < n + 2; i++){			
 
 			values[i] = new float[degree + 1];
 
