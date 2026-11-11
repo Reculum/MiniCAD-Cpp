@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "ArrayQueue.h"
+#include "curveGenerator.h"
 #include <iostream>
 #include <vector>
 
@@ -207,3 +208,13 @@ void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera){
 
 }
 
+
+void CreateNurbsCurve(PointArrayQueue& ActivePoints, NURBS_Curve*& ActiveNurb, int degree){
+
+	if (IsKeyPressed(KEY_C)){
+
+		delete ActiveNurb;
+		ActiveNurb = new NURBS_Curve(ActivePoints, degree);
+	}
+
+}

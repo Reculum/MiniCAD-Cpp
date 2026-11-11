@@ -2,6 +2,7 @@
 #include "raylib.h"
 
 #include "interactions.h"
+#include "curveGenerator.h"
 #include "ArrayQueue.h"
 
 int main()
@@ -26,6 +27,7 @@ int main()
     SetTargetFPS(60);
 
 	PointArrayQueue ActivePoints = PointArrayQueue();
+	NURBS_Curve* activeNurb = nullptr;
 	
 
     // Main loop
@@ -35,6 +37,7 @@ int main()
 		CreatePointEvent(ActivePoints);
 		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
+		CreateNurbsCurve(ActivePoints, activeNurb, 1);
 
         BeginDrawing();
 
@@ -56,6 +59,10 @@ int main()
 
 				//all the control points, so far
 				ActivePoints.Plot();
+
+				//plot the only NURB
+
+				if ( activeNurb != nullptr){activeNurb->Plot();}
 
 			//then we can process everything that's transparent
 

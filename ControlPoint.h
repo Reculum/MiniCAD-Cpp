@@ -11,6 +11,7 @@ class ControlPoint3D{
 		Vector3 coords;
 		bool transparent;
 		bool selected;
+		int TimesMoved = 0;
 
 	public:
 
@@ -34,8 +35,9 @@ class ControlPoint3D{
 			}
 		}
 
-		void Move(Vector3 newPos){coords = newPos;}
+		void Move(Vector3 newPos){coords = newPos; TimesMoved += 1;}
 
+		int getTimesMoved(){return TimesMoved;}
 		void Select(){selected = true;}
 		void Unselect(){selected = false;}
 
