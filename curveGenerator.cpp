@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 #include <array>
+#include <list>
 #include <stdexcept>
 
 
@@ -19,6 +20,8 @@ class NURBS_Curve{
 	float* weights;
 	int n;
 	int degree;
+	const float TESSELLATION_TOL = 0.01f;
+	const float TESSELLATION_DER = 0.001f;
 
 	public:
 
@@ -33,9 +36,8 @@ class NURBS_Curve{
 			throw std::invalid_argument("Invalid degree or insufficient control points");
 		}
     	
-
-
 		weights = new float[n + 1];
+
 		CtrlPointsPointers.reserve(n + 1);
 		Nodes.reserve(n + degree + 2);
 
@@ -142,6 +144,65 @@ class NURBS_Curve{
 
 
 		return ret;	
+
+	}
+
+	std::list<float> ComputeTessellationFloats(float a, float b){
+
+		std::list<float> retList;
+
+		if ((b - a) < TESSELLATION_TOL){		
+
+			retList.push_back(a);
+			retList.push_back(b);
+
+			return retList;
+		}
+
+		float m = (a + b)/2;
+
+		Vector3 P_a = Eval(a);
+		Vector3 P_m = Eval(m);
+		Vector3 P_b = Eval(b);
+
+		float newDist = Vector3Length(P_m - P_a) + Vector3Length(P_b - P_m);
+		float oldDist = Vector3Length(P_b - P_a);
+
+		if ( (newDist - oldDist) < 2 * TESSELLATION_DER){
+
+			retList.push_back(a);
+			retList.push_back(b);
+
+			return retList;
+		}
+		else{
+
+			std::list<float> left = ComputeAdaptiveTessellation(a, m);
+			std::list<float> right = ComputeAdaptiveTessellation(m, b);
+
+			//remove the double m
+			right.pop_front();
+
+			//combine the two
+			left.splice(left.end(), right);
+
+			return left;			
+		}
+
+
+	}
+
+	std::vector<Vector3> ComputeAdaptiveTessellation(){
+
+		std::list<float> floatList = ComputeTessellationFloats(0, 1);
+
+		for (int k = 0; k < floatList.size(); k++){
+
+			float u = floatList.front();
+			floatList.pop_front();
+
+			Tessellation.push_back(Eval(u));
+		}
 
 	}
 
