@@ -1,10 +1,10 @@
-
+#pragma once
 
 class GraphicsElement{
 
 	protected:
 
-		bool transparent = false;
+		bool transparent = true;
 		bool selected = false;		
 
 	public:

@@ -15,8 +15,6 @@ class ControlPoint3D : public GraphicsElement{
 	public:
 
 		ControlPoint3D(){coords.x = 0.0f; coords.z = 0.0f; coords.y = 0.0f;
-			transparent = true;
-			selected = false;
 		}
 		ControlPoint3D(float x, float z, float y){coords.x = x; coords.z = z; coords.y = y;
 			transparent = false;

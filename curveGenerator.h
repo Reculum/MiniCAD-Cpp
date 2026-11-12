@@ -6,7 +6,6 @@
 
 #include <cmath>
 #include <vector>
-#include <array>
 #include <list>
 #include <stdexcept>
 
@@ -23,8 +22,8 @@ class NURBS_Curve : public GraphicsElement{
 	std::vector<float> weights;
 	int n = 0;
 	int degree = 0;
-	const float TESSELLATION_TOL = 0.01f;
-	const float TESSELLATION_DER = 0.001f;
+	float TESSELLATION_TOL = 0.01f;
+	float TESSELLATION_DER = 0.001f;
 
 	int TotTimesMoved = 0;
 
@@ -34,35 +33,47 @@ class NURBS_Curve : public GraphicsElement{
 
 	NURBS_Curve(PointArrayQueue<ControlPoint3D>& ActivePoints, int p){
 
+		//initialize some standard parameters, for non-void curves
 		degree = p;
+		transparent = false;
+		selected = false;
+
+		//find the actually selected points
 
 		std::vector<int> SelectedPoints = ActivePoints.FindSelectedPoints();
 		n = SelectedPoints.size() - 1;
 
+		//check for dimension/degree agreement
 		if (p < 0 || SelectedPoints.size() < static_cast<size_t>(p + 1)){
 			throw std::invalid_argument("Invalid degree or insufficient control points");
 		}
-    	
+
+		//if everything is good, start constructing the weights    	
 		weights.resize(n + 1, 1.0f);
 
+		//then the control points pointers
 		CtrlPointsPointers.reserve(n + 1);
+
+		//and the nodes
 		Nodes.reserve(n + degree + 2);
 
 		for (int k = 0; k < n + 1; k++){
 
+			//finally, memorize the pointers to the selected points
 			CtrlPointsPointers.push_back(&ActivePoints.getItem(SelectedPoints[k]));
 
+			//mark how many times they have been moved
 			TotTimesMoved += ActivePoints.getItem(SelectedPoints[k]).getTimesMoved();
-			weights[k] = 1.0f;
-
 		}
 
+		//one final useful constant to create the nodes values properly
 		int m = n + p + 1;
 
 		for (int k = 0; k <= p; k++){Nodes.push_back(0.0f);}
 		for (int k = p + 1; k <= n; k++){Nodes.push_back( (float) (k - p) / (n - p + 1));}
 		for (int k = n + 1; k <= m; k++){Nodes.push_back(1.0f);}
 
+		//compute a Tessellation fo the curve for future plotting
 		ComputeAdaptiveTessellation();
 		
 	}
@@ -225,26 +236,30 @@ class NURBS_Curve : public GraphicsElement{
 
 	void Plot() override{
 
-		int tmpTotMoves = 0;
+		if (!transparent){
 
-		for (int k = 0; k < n + 1; k++){
+			int tmpTotMoves = 0;
 
-			ControlPoint3D* tmp = CtrlPointsPointers[k];
-			tmpTotMoves += tmp -> getTimesMoved();
-		}
+			for (int k = 0; k < n + 1; k++){
 
-		if ( (tmpTotMoves > TotTimesMoved)){
-			
-			TotTimesMoved = tmpTotMoves;
-        	Tessellation.clear();
-        	ComputeAdaptiveTessellation();
+				ControlPoint3D* tmp = CtrlPointsPointers[k];
+				tmpTotMoves += tmp -> getTimesMoved();
+			}
 
-		}
+			if ( (tmpTotMoves > TotTimesMoved)){
+				
+				TotTimesMoved = tmpTotMoves;
+				Tessellation.clear();
+				ComputeAdaptiveTessellation();
 
-		int l = Tessellation.size();
+			}
 
-		for (int k = 0; k < l - 1; k++){
-			DrawLine3D(Tessellation[k], Tessellation[k+1], (Color) GREEN);
+			int l = Tessellation.size();
+
+			for (int k = 0; k < l - 1; k++){
+				DrawLine3D(Tessellation[k], Tessellation[k+1], (Color) GREEN);
+			}
+
 		}
 
 	}

@@ -37,7 +37,7 @@ int main()
 		CreatePointEvent(ActivePoints);
 		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
-		CreateNurbsCurve(ActiveNurbs, 2);
+		CreateNurbsCurve(ActiveNurbs, ActivePoints, 2);
 
         BeginDrawing();
 
@@ -59,6 +59,9 @@ int main()
 
 				//all the control points, so far
 				ActivePoints.Plot();
+
+				//all the nurbs, so far
+				ActiveNurbs.Plot();
 
 				//plot the only NURB
 
