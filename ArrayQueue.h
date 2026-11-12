@@ -86,7 +86,7 @@ class PointArrayQueue{
 
 	protected:
 
-		D* TotalPoints;
+		std::vector<D*> TotalPoints;
 
 		IntQueue FreeIndexes = IntQueue();
 		int FreeSpaces = 2;
@@ -97,7 +97,8 @@ class PointArrayQueue{
 
 		PointArrayQueue(){
 			
-			TotalPoints = new D[2];
+			TotalPoints.resize(2, nullptr);
+
 			FreeIndexes.Enqueue(0);
 			FreeIndexes.Enqueue(1);
 
@@ -106,51 +107,55 @@ class PointArrayQueue{
 		PointArrayQueue(const PointArrayQueue&) = delete;
 		PointArrayQueue& operator=(const PointArrayQueue&) = delete;
 
-		~PointArrayQueue() {delete[] TotalPoints;}
-
 		int getSize(){return size;}
 
-		D& getItem(int k){return TotalPoints[k];}
+		D& getItem(int k){return *TotalPoints[k];}
 
-		void RemoveItem(int k){
-
-			D& p = getItem(k);
-
-			p.MakeInvisible();
-			p.Unselect();
-			FreeIndexes.Enqueue(k);
-			FreeSpaces += 1;
-		
-		}
-		
 		void Append(D& p){
 
 			if (FreeSpaces == 0){
 
-				D* newTotalPoints = new D[2 * size];
+				std::vector<D*> newTotalPoints;
+				newTotalPoints.resize(2 * size, nullptr);
 
 				for (int k = 0; k < size; k++){
 
 					newTotalPoints[k] = TotalPoints[k];
 					FreeIndexes.Enqueue(size + k);
 				}
-				
-				//avoid a huge memory leak
-				delete[] TotalPoints;
 
 				TotalPoints = newTotalPoints;
-				FreeSpaces = size;
-				
+				FreeSpaces = size;				
 				size *= 2;			
 			}
 
 			int nextAvaiableIdx = FreeIndexes.Dequeue();
 
 			//warning: this is a copy!
-			TotalPoints[nextAvaiableIdx] = p;
+			TotalPoints[nextAvaiableIdx] = &p;
 			FreeSpaces -= 1;
 
 		}
+
+		void RemoveItem(int k){
+
+			D& p = getItem(k);
+
+			if (!p.IsVisible()) return;
+
+			p.MakeInvisible();
+			p.Unselect();
+			
+			//avoid leaking memory
+			delete &p;
+			TotalPoints[k] = nullptr;
+
+			FreeIndexes.Enqueue(k);
+			FreeSpaces += 1;
+		
+		}
+		
+
 
 		void RemovePoint(D& p){
 
@@ -159,7 +164,7 @@ class PointArrayQueue{
 
 			while ((k < size) && (!FoundPoint)){
 
-				if ( (&TotalPoints[k] == &p) && (p.IsVisible())){
+				if ( (TotalPoints[k] == &p) && (p.IsVisible())){
 					FoundPoint = true;
 				}
 				else{
@@ -170,6 +175,10 @@ class PointArrayQueue{
 			if (FoundPoint){
 
 				FreeIndexes.Enqueue(k);
+
+				delete &p;
+				TotalPoints[k] = nullptr;
+
 				p.Unselect();
 				p.MakeInvisible();
 				FreeSpaces += 1;
@@ -185,7 +194,7 @@ class PointArrayQueue{
 
 			for(int k = 0; k < size; k++){
 
-				if ( getItem(k).IsSelected() ){
+				if ( (TotalPoints[k] != nullptr) && (getItem(k).IsSelected()) ){
 					indexesSelected.push_back(k);
 				}
 			}
@@ -197,7 +206,10 @@ class PointArrayQueue{
 		void Plot(){
 
 			for (int k = 0; k < size; k++){
-				TotalPoints[k].Plot();
+
+				if (TotalPoints[k] != nullptr){
+					TotalPoints[k] -> Plot();
+				}				
 			}
 
 		}

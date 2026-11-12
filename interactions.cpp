@@ -30,14 +30,14 @@ void MoveCameraEvent(Camera& camera){if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){U
 void CreatePointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints){
 	
 	if (IsKeyPressed(KEY_P) && !(IsKeyDown(KEY_LEFT_SHIFT))){
-				ControlPoint3D p = ControlPoint3D();
-				p.ControlPointFromInput();
-				ActivePoints.Append(p);
+				ControlPoint3D* p = new ControlPoint3D();
+				p -> ControlPointFromInput();
+				ActivePoints.Append(*p);
 	}
 
 	if (IsKeyPressed(KEY_P) && (IsKeyDown(KEY_LEFT_SHIFT))){
-				ControlPoint3D p = ControlPoint3D(StdNormDist(gen), StdNormDist(gen), StdNormDist(gen));
-				ActivePoints.Append(p);
+				ControlPoint3D* p =  new ControlPoint3D(StdNormDist(gen), StdNormDist(gen), StdNormDist(gen));
+				ActivePoints.Append(*p);
 	}
 
 }
@@ -57,7 +57,7 @@ void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& cam
 
 			//filter for visible points
 
-			if (tmpPoint.IsVisible()){
+			if ( (&tmpPoint != nullptr) && (tmpPoint.IsVisible()) ){
 
 				//get collision data
 
@@ -224,8 +224,8 @@ void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue
 
 	if (IsKeyPressed(KEY_C)){
 
-		NURBS_Curve tmpCurve = NURBS_Curve(ActivePoints, degree);
-		ActiveNurbs.Append(tmpCurve);
+		NURBS_Curve* tmpCurve = new NURBS_Curve(ActivePoints, degree);
+		ActiveNurbs.Append(*tmpCurve);
 	}
 
 }

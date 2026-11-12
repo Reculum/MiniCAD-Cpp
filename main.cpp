@@ -8,8 +8,8 @@
 int main()
 {
     // Initialization
-    const int screenWidth = 1000;
-    const int screenHeight = 700;
+    const int screenWidth = 1080;
+    const int screenHeight = 720;
 
     InitWindow(screenWidth, screenHeight, "MiniCAD - NURBS Visualizer");
 
