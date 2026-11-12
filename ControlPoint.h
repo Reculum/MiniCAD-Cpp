@@ -10,7 +10,7 @@ class ControlPoint3D : public GraphicsElement{
 	protected:
 
 		Vector3 coords;
-		int TimesMoved = 0;
+		int TimesUpdated = 0;
 
 	public:
 
@@ -22,9 +22,9 @@ class ControlPoint3D : public GraphicsElement{
 		}
 
 		Vector3 getCoords(){return coords;}
-		int getTimesMoved(){return TimesMoved;}
+		int getTimesUpdated(){return TimesUpdated;}
 
-		void Move(Vector3 newPos){coords = newPos; TimesMoved += 1;}
+		void Move(Vector3 newPos){coords = newPos; TimesUpdated += 1;}
 		
 		void ControlPointFromInput(){
 

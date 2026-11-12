@@ -1,5 +1,7 @@
 
 #include "raylib.h"
+#include "rlgl.h"
+
 
 #include "interactions.h"
 #include "curveGenerator.h"
@@ -22,6 +24,8 @@ int main()
     camera.fovy = 45.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
+	rlDisableBackfaceCulling();
+
 	Vector3 origin = (Vector3){0.0f, 0.0f, 0.0f};
 
     SetTargetFPS(60);
@@ -37,7 +41,7 @@ int main()
 		CreatePointEvent(ActivePoints);
 		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
-		CreateNurbsCurve(ActiveNurbs, ActivePoints, 2);
+		CreateNurbsCurve(ActiveNurbs, ActivePoints, 3);
 
         BeginDrawing();
 

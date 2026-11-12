@@ -1,12 +1,15 @@
 
 #include <cmath>
-#include "raylib.h"
-#include "raymath.h"
-#include "ArrayQueue.h"
-#include "curveGenerator.h"
 #include <iostream>
 #include <vector>
 #include <random>
+
+#include "raylib.h"
+#include "raymath.h"
+
+#include "ArrayQueue.h"
+#include "curveGenerator.h"
+
 
 std::random_device rd;
 std::mt19937 gen(rd());

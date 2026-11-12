@@ -22,8 +22,8 @@ class NURBS_Curve : public GraphicsElement{
 	std::vector<float> weights;
 	int n = 0;
 	int degree = 0;
-	float TESSELLATION_TOL = 0.01f;
-	float TESSELLATION_DER = 0.001f;
+	float TESSELLATION_TOL = 0.001f;
+	float TESSELLATION_DER = 0.0001f;
 
 	int TotTimesMoved = 0;
 
@@ -63,7 +63,7 @@ class NURBS_Curve : public GraphicsElement{
 			CtrlPointsPointers.push_back(&ActivePoints.getItem(SelectedPoints[k]));
 
 			//mark how many times they have been moved
-			TotTimesMoved += ActivePoints.getItem(SelectedPoints[k]).getTimesMoved();
+			TotTimesMoved += ActivePoints.getItem(SelectedPoints[k]).getTimesUpdated();
 		}
 
 		//one final useful constant to create the nodes values properly
@@ -147,12 +147,14 @@ class NURBS_Curve : public GraphicsElement{
 		
 		Vector3 ret = {0.0f, 0.0f, 0.0f};
 		Vector3 tmp;
+		float normalizingSum = 0;
 
 		for (int i = std::max(0, z - degree); i <= z; i++){
 
 			tmp = CtrlPointsPointers[i] -> getCoords();
 
-			ret = ret + tmp * values[i][degree];
+			ret = ret + tmp * values[i][degree] * weights[i];
+			normalizingSum += values[i][degree] * weights[i];
 		}
 
 
@@ -160,7 +162,7 @@ class NURBS_Curve : public GraphicsElement{
 		delete[] values;
 
 
-		return ret;	
+		return ret / normalizingSum;	
 
 	}
 
@@ -243,7 +245,7 @@ class NURBS_Curve : public GraphicsElement{
 			for (int k = 0; k < n + 1; k++){
 
 				ControlPoint3D* tmp = CtrlPointsPointers[k];
-				tmpTotMoves += tmp -> getTimesMoved();
+				tmpTotMoves += tmp -> getTimesUpdated();
 			}
 
 			if ( (tmpTotMoves > TotTimesMoved)){
@@ -254,10 +256,17 @@ class NURBS_Curve : public GraphicsElement{
 
 			}
 
+			for (int k = 0; k < n; k++){
+				DrawLine3D(CtrlPointsPointers[k] -> getCoords(), CtrlPointsPointers[k+1] -> getCoords(), (Color) BLACK);
+			}
+
 			int l = Tessellation.size();
 
 			for (int k = 0; k < l - 1; k++){
-				DrawLine3D(Tessellation[k], Tessellation[k+1], (Color) GREEN);
+
+				if (!selected){DrawLine3D(Tessellation[k], Tessellation[k+1], (Color) GREEN);}
+				else{DrawLine3D(Tessellation[k], Tessellation[k+1], (Color) RED);}
+				
 			}
 
 		}
