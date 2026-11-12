@@ -26,8 +26,8 @@ int main()
 
     SetTargetFPS(60);
 
-	PointArrayQueue ActivePoints = PointArrayQueue();
-	NURBS_Curve* activeNurb = nullptr;
+	PointArrayQueue<ControlPoint3D> ActivePoints = PointArrayQueue<ControlPoint3D>();
+	PointArrayQueue<NURBS_Curve> ActiveNurbs = PointArrayQueue<NURBS_Curve>();
 	
 
     // Main loop
@@ -37,7 +37,7 @@ int main()
 		CreatePointEvent(ActivePoints);
 		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
-		CreateNurbsCurve(ActivePoints, activeNurb, 2);
+		CreateNurbsCurve(ActiveNurbs, 2);
 
         BeginDrawing();
 
@@ -61,8 +61,6 @@ int main()
 				ActivePoints.Plot();
 
 				//plot the only NURB
-
-				if ( activeNurb != nullptr){activeNurb->Plot();}
 
 			//then we can process everything that's transparent
 

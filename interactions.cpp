@@ -27,7 +27,7 @@ MovingTracker GLOBAL_MOVING_TRACKER;
 
 void MoveCameraEvent(Camera& camera){if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}}
 
-void CreatePointEvent(PointArrayQueue& ActivePoints){
+void CreatePointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints){
 	
 	if (IsKeyPressed(KEY_P) && !(IsKeyDown(KEY_LEFT_SHIFT))){
 				ControlPoint3D p = ControlPoint3D();
@@ -42,7 +42,7 @@ void CreatePointEvent(PointArrayQueue& ActivePoints){
 
 }
 
-void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera){
+void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
 
 	if ( (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
 		Vector2 mousePos = GetMousePosition();
@@ -88,7 +88,7 @@ void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera){
 
 }
 
-void RemoveSelectedPoints(PointArrayQueue& ActivePoints){
+void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 	if (IsKeyPressed(KEY_DELETE)){
 		
@@ -152,7 +152,7 @@ Vector3 ComputeMouseRayXYintersection(Ray MouseRay, ControlPoint3D p){
 }
 
 
-void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera){
+void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
 
 	if (IsKeyDown(KEY_M)){
 
@@ -220,12 +220,12 @@ void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera){
 }
 
 
-void CreateNurbsCurve(PointArrayQueue& ActivePoints, NURBS_Curve*& ActiveNurb, int degree){
+void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue<ControlPoint3D>& ActivePoints, int degree){
 
 	if (IsKeyPressed(KEY_C)){
 
-		delete ActiveNurb;
-		ActiveNurb = new NURBS_Curve(ActivePoints, degree);
+		NURBS_Curve tmpCurve = NURBS_Curve(ActivePoints, degree);
+		ActiveNurbs.Append(tmpCurve);
 	}
 
 }

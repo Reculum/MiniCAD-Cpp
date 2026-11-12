@@ -11,4 +11,4 @@ void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& cam
 void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints);
 
 void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera);
-void CreateNurbsCurve(PointArrayQueue<ControlPoint3D>& ActivePoints, NURBS_Curve*& ActiveNurb, int degree);
+void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue<ControlPoint3D>& ActivePoints, int degree);
