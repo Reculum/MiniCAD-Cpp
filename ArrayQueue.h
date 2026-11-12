@@ -80,12 +80,13 @@ class IntQueue {
 		}
 };
 
+template <typename D>
 
 class PointArrayQueue{
 
 	protected:
 
-		ControlPoint3D* TotalPoints;
+		D* TotalPoints;
 
 		IntQueue FreeIndexes = IntQueue();
 		int FreeSpaces = 2;
@@ -96,7 +97,7 @@ class PointArrayQueue{
 
 		PointArrayQueue(){
 			
-			TotalPoints = new ControlPoint3D[2];
+			TotalPoints = new D[2];
 			FreeIndexes.Enqueue(0);
 			FreeIndexes.Enqueue(1);
 
@@ -109,11 +110,11 @@ class PointArrayQueue{
 
 		int getSize(){return size;}
 
-		ControlPoint3D& getItem(int k){return TotalPoints[k];}
+		D& getItem(int k){return TotalPoints[k];}
 
 		void RemoveItem(int k){
 
-			ControlPoint3D& p = getItem(k);
+			D& p = getItem(k);
 
 			p.MakeInvisible();
 			p.Unselect();
@@ -122,11 +123,11 @@ class PointArrayQueue{
 		
 		}
 		
-		void Append(ControlPoint3D& p){
+		void Append(D& p){
 
 			if (FreeSpaces == 0){
 
-				ControlPoint3D* newTotalPoints = new ControlPoint3D[2 * size];
+				D* newTotalPoints = new D[2 * size];
 
 				for (int k = 0; k < size; k++){
 
@@ -151,7 +152,7 @@ class PointArrayQueue{
 
 		}
 
-		void RemovePoint(ControlPoint3D& p){
+		void RemovePoint(D& p){
 
 			bool FoundPoint = false;
 			int k = 0;
@@ -176,15 +177,7 @@ class PointArrayQueue{
 
 			
 		}
-
-
-		void Plot(){
-
-			for (int k = 0; k < size; k++){
-				TotalPoints[k].Plot();
-			}
-
-		}
+		
 
 		std::vector<int> FindSelectedPoints(){
 
@@ -200,4 +193,14 @@ class PointArrayQueue{
 			return indexesSelected;
 
 		}
-};
+
+		void Plot(){
+
+			for (int k = 0; k < size; k++){
+				TotalPoints[k].Plot();
+			}
+
+		}
+
+
+	};

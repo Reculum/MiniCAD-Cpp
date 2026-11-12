@@ -6,9 +6,9 @@
 #include "interactions.h"
 
 void MoveCameraEvent(Camera& camera);
-void CreatePointEvent(PointArrayQueue& ActivePoints);
-void SelectPointEvent(PointArrayQueue& ActivePoints, Camera& camera);
-void RemoveSelectedPoints(PointArrayQueue& ActivePoints);
+void CreatePointEvent(PointArrayQueue<ControlPoint3D>& ctivePoints);
+void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera);
+void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints);
 
-void MoveSelectedPoints(PointArrayQueue& ActivePoints, Camera& camera);
-void CreateNurbsCurve(PointArrayQueue& ActivePoints, NURBS_Curve*& ActiveNurb, int degree);
+void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera);
+void CreateNurbsCurve(PointArrayQueue<ControlPoint3D>& ActivePoints, NURBS_Curve*& ActiveNurb, int degree);

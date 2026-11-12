@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ArrayQueue.h"
+#include "GraphicsElement.h"
 #include "raymath.h"
 
 #include <cmath>
@@ -11,7 +12,7 @@
 
 
 
-class NURBS_Curve{
+class NURBS_Curve : public GraphicsElement{
 
 	protected:
 
@@ -31,7 +32,7 @@ class NURBS_Curve{
 
 	NURBS_Curve() = default;
 
-	NURBS_Curve(PointArrayQueue& ActivePoints, int p){
+	NURBS_Curve(PointArrayQueue<ControlPoint3D>& ActivePoints, int p){
 
 		degree = p;
 
@@ -213,7 +214,16 @@ class NURBS_Curve{
 
 	}
 
-	void Plot(){
+
+	void Select() override {selected = true;}
+	void Unselect() override {selected = false;}
+	bool IsSelected() override {return selected;}
+
+	void MakeInvisible() override {transparent = true;}
+	void MakeVisible() override {transparent = true;}
+	bool IsVisible() override {return !transparent;}
+
+	void Plot() override{
 
 		int tmpTotMoves = 0;
 

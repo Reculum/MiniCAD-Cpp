@@ -2,15 +2,14 @@
 #pragma once
 
 #include <raylib.h>
+#include "GraphicsElement.h"
 #include <iostream>
 
-class ControlPoint3D{
+class ControlPoint3D : public GraphicsElement{
 
 	protected:
 
 		Vector3 coords;
-		bool transparent;
-		bool selected;
 		int TimesMoved = 0;
 
 	public:
@@ -25,28 +24,10 @@ class ControlPoint3D{
 		}
 
 		Vector3 getCoords(){return coords;}
-
-		void Plot(){
-			if (!transparent){
-
-				if (selected){DrawSphere(coords, 0.05f, (Color) BLUE);}
-				else{DrawSphere(coords, 0.05f, (Color) BLACK);}
-				
-			}
-		}
+		int getTimesMoved(){return TimesMoved;}
 
 		void Move(Vector3 newPos){coords = newPos; TimesMoved += 1;}
 		
-
-		int getTimesMoved(){return TimesMoved;}
-		void Select(){selected = true;}
-		void Unselect(){selected = false;}
-
-		bool IsSelected(){return selected;}
-
-		void MakeInvisible(){transparent = true;}
-		bool IsVisible(){return !transparent;}
-
 		void ControlPointFromInput(){
 
 			char comps[] = "xyz";
@@ -68,6 +49,27 @@ class ControlPoint3D{
 			transparent = false;
 
 		}
+
+		
+
+		void Select() override {selected = true;}
+		void Unselect() override {selected = false;}
+		bool IsSelected() override {return selected;}
+
+		void MakeInvisible() override {transparent = true;}
+		void MakeVisible() override {transparent = true;}
+		bool IsVisible() override {return !transparent;}
+
+		void Plot() override{
+			if (!transparent){
+
+				if (selected){DrawSphere(coords, 0.05f, (Color) BLUE);}
+				else{DrawSphere(coords, 0.05f, (Color) BLACK);}
+				
+			}
+		}
+
+		
 
 
 
