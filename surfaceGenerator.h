@@ -11,15 +11,6 @@
 #include <stdexcept>
 #include <vector>
 
-// Tensor-product rational B-spline surface (NURBS).
-//
-// Control points are taken from ActivePoints in the order returned by
-// FindSelectedPoints(). They are arranged row-major:
-//   P(i,j) = CtrlPointsPointers[i * controlPointsV + j]
-// where i is the u direction and j is the v direction.
-//
-// The surface uses an open-uniform knot vector in each parameter direction
-// and a uniform (non-adaptive) tessellation grid.
 class NURBS_Surface : public GraphicsElement {
 
 protected:
