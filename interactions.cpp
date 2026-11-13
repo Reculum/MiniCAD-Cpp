@@ -159,7 +159,11 @@ void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 		std::vector<int> indexesToBeDeleted = ActivePoints.FindSelectedPoints();
 
 		for (int k = 0; k < indexesToBeDeleted.size(); k++){
-			ActivePoints.RemoveItem(indexesToBeDeleted[k]);
+
+			if (!ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToCurve()){
+				ActivePoints.RemoveItem(indexesToBeDeleted[k]);
+			}
+			else{std::cout << "The point can't be deleted! It belongs to a Curve!!!" << std::endl;}			
 		}
 	}
 
@@ -335,3 +339,35 @@ void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
 
 }
+
+
+void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
+
+	if (IsKeyPressed(KEY_DELETE)){
+		
+		std::vector<int> indexesToBeDeleted = ActiveNurbs.FindSelectedPoints();
+
+		for (int k = 0; k < indexesToBeDeleted.size(); k++){
+
+			NURBS_Curve& tmpCurve = ActiveNurbs.getItem(indexesToBeDeleted[k]);
+
+			std::vector<ControlPoint3D*> tmpCtrlPoints = tmpCurve.getCtrlPoints();
+
+			for (int j = 0; j < tmpCtrlPoints.size(); j++){tmpCtrlPoints[j] -> MarkAsNotBelongingToCurve();}
+
+			ActiveNurbs.RemoveItem(indexesToBeDeleted[k]);
+		}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+

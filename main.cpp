@@ -46,7 +46,9 @@ int main()
 
 		CreateNurbsCurve(ActiveNurbs, ActivePoints, 2);
 		SelectCurveEvent(ActiveNurbs, camera);
+
 		ChangePointWeightOnCurve(ActiveNurbs);	
+		RemoveSelectedCurves(ActiveNurbs);
 		
 		
 		

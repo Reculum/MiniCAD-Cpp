@@ -12,6 +12,8 @@ class ControlPoint3D : public GraphicsElement{
 		Vector3 coords;
 		int TimesUpdated = 0;
 
+		bool BelongsToCurve = false;
+
 	public:
 
 		ControlPoint3D(){coords.x = 0.0f; coords.z = 0.0f; coords.y = 0.0f;}
@@ -25,6 +27,10 @@ class ControlPoint3D : public GraphicsElement{
 
 		void Update(){TimesUpdated += 1;}
 		int getTimesUpdated(){return TimesUpdated;}
+
+		void MarkAsBelongingToCurve(){BelongsToCurve = true;}
+		void MarkAsNotBelongingToCurve(){BelongsToCurve = false;}
+		bool IsItBelongingToCurve(){return BelongsToCurve;}
 
 		void Move(Vector3 newPos){coords = newPos; Update();}
 		

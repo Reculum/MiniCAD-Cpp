@@ -63,6 +63,7 @@ class NURBS_Curve : public GraphicsElement{
 			CtrlPointsPointers.push_back(&ActivePoints.getItem(SelectedPoints[k]));
 
 			//mark how many times they have been moved
+			ActivePoints.getItem(SelectedPoints[k]).MarkAsBelongingToCurve();
 			TotTimesMoved += ActivePoints.getItem(SelectedPoints[k]).getTimesUpdated();
 		}
 

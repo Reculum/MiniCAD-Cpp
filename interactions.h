@@ -19,3 +19,4 @@ void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue
 void SelectCurveEvent(PointArrayQueue<NURBS_Curve>& ActiveNurbs, Camera& camera);
 
 void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs);
+void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs);
