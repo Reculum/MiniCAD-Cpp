@@ -45,6 +45,19 @@ void CreatePointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 }
 
+void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue<ControlPoint3D>& ActivePoints, int degree){
+
+	if (IsKeyPressed(KEY_C)){
+
+		NURBS_Curve* tmpCurve = new NURBS_Curve(ActivePoints, degree);
+		ActiveNurbs.Append(*tmpCurve);
+	}
+
+}
+
+
+
+
 void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
 
 	if ( (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
@@ -152,6 +165,10 @@ void SelectCurveEvent(PointArrayQueue<NURBS_Curve>& ActiveNurbs, Camera& camera)
 
 }
 
+
+
+
+
 void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 	if (IsKeyPressed(KEY_DELETE)){
@@ -169,55 +186,30 @@ void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 }
 
-Vector3 ComputeMouseRayXZintersection(Ray MouseRay, ControlPoint3D p){
+void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
-	Vector3 RaydDir = MouseRay.direction;
-	Vector3 RayPos = MouseRay.position;
-	Vector3 pCoords = p.getCoords();
+	if (IsKeyPressed(KEY_DELETE)){
+		
+		std::vector<int> indexesToBeDeleted = ActiveNurbs.FindSelectedPoints();
 
-	float pY = pCoords.y;
-	float RayY = RayPos.y;
-	float RayDirY =  RaydDir.y;
+		for (int k = 0; k < indexesToBeDeleted.size(); k++){
 
-	if (fabsf(RayDirY) < 1e-6f){return pCoords;};
+			NURBS_Curve& tmpCurve = ActiveNurbs.getItem(indexesToBeDeleted[k]);
 
-	float t = (pY - RayY) / RayDirY;
+			std::vector<ControlPoint3D*> tmpCtrlPoints = tmpCurve.getCtrlPoints();
 
-	if (t < 0.0f){return pCoords;};
+			for (int j = 0; j < tmpCtrlPoints.size(); j++){tmpCtrlPoints[j] -> MarkAsNotBelongingToCurve();}
 
-	Vector3 interCoords = RayPos + t * RaydDir;
+			ActiveNurbs.RemoveItem(indexesToBeDeleted[k]);
+		}
+	}
 
-	//float interX = interCoords.x;
-	//float interZ = interCoords.z;
-	//float interY = interCoords.y;
-
-	return interCoords;
 }
 
-Vector3 ComputeMouseRayXYintersection(Ray MouseRay, ControlPoint3D p){
 
-	Vector3 RaydDir = MouseRay.direction;
-	Vector3 RayPos = MouseRay.position;
-	Vector3 pCoords = p.getCoords();
 
-	float pZ = pCoords.z;
-	float RayZ = RayPos.z;
-	float RayDirZ =  RaydDir.z;
 
-	if (fabsf(RayDirZ) < 1e-6f){return pCoords;};
 
-	float t = (pZ - RayZ) / RayDirZ;
-
-	if (t < 0.0f){return pCoords;};
-
-	Vector3 interCoords = RayPos + t * RaydDir;
-
-	//float interX = interCoords.x;
-	//float interZ = interCoords.z;
-	//float interY = interCoords.y;
-
-	return interCoords;
-}
 
 
 void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
@@ -288,16 +280,6 @@ void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& c
 }
 
 
-void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue<ControlPoint3D>& ActivePoints, int degree){
-
-	if (IsKeyPressed(KEY_C)){
-
-		NURBS_Curve* tmpCurve = new NURBS_Curve(ActivePoints, degree);
-		ActiveNurbs.Append(*tmpCurve);
-	}
-
-}
-
 void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
 	if ( (IsKeyDown(KEY_LEFT_SHIFT)) && (IsKeyPressed(KEY_W)) ){
@@ -341,24 +323,54 @@ void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 }
 
 
-void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
+Vector3 ComputeMouseRayXZintersection(Ray MouseRay, ControlPoint3D p){
 
-	if (IsKeyPressed(KEY_DELETE)){
-		
-		std::vector<int> indexesToBeDeleted = ActiveNurbs.FindSelectedPoints();
+	Vector3 RaydDir = MouseRay.direction;
+	Vector3 RayPos = MouseRay.position;
+	Vector3 pCoords = p.getCoords();
 
-		for (int k = 0; k < indexesToBeDeleted.size(); k++){
+	float pY = pCoords.y;
+	float RayY = RayPos.y;
+	float RayDirY =  RaydDir.y;
 
-			NURBS_Curve& tmpCurve = ActiveNurbs.getItem(indexesToBeDeleted[k]);
+	if (fabsf(RayDirY) < 1e-6f){return pCoords;};
 
-			std::vector<ControlPoint3D*> tmpCtrlPoints = tmpCurve.getCtrlPoints();
+	float t = (pY - RayY) / RayDirY;
 
-			for (int j = 0; j < tmpCtrlPoints.size(); j++){tmpCtrlPoints[j] -> MarkAsNotBelongingToCurve();}
+	if (t < 0.0f){return pCoords;};
 
-			ActiveNurbs.RemoveItem(indexesToBeDeleted[k]);
-		}
-	}
+	Vector3 interCoords = RayPos + t * RaydDir;
 
+	//float interX = interCoords.x;
+	//float interZ = interCoords.z;
+	//float interY = interCoords.y;
+
+	return interCoords;
+}
+
+Vector3 ComputeMouseRayXYintersection(Ray MouseRay, ControlPoint3D p){
+
+	Vector3 RaydDir = MouseRay.direction;
+	Vector3 RayPos = MouseRay.position;
+	Vector3 pCoords = p.getCoords();
+
+	float pZ = pCoords.z;
+	float RayZ = RayPos.z;
+	float RayDirZ =  RaydDir.z;
+
+	if (fabsf(RayDirZ) < 1e-6f){return pCoords;};
+
+	float t = (pZ - RayZ) / RayDirZ;
+
+	if (t < 0.0f){return pCoords;};
+
+	Vector3 interCoords = RayPos + t * RaydDir;
+
+	//float interX = interCoords.x;
+	//float interZ = interCoords.z;
+	//float interY = interCoords.y;
+
+	return interCoords;
 }
 
 
