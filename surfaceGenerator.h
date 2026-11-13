@@ -30,6 +30,10 @@ protected:
     int tessellationU = 32;
     int tessellationV = 32;
 
+	float ambientLight = 0.8f;
+	float diffuseLight = 0.2f;
+	Vector3 CeilingRay = {0.0f, 0.0f, 1.0f};
+
     int TotTimesUpdated = 0;
 
     static std::vector<float> BuildOpenUniformKnotVector(
@@ -336,8 +340,18 @@ public:
                 const Vector3& p11 = Tessellation[TessellationIndex(i + 1, j + 1)];
                 const Vector3& p01 = Tessellation[TessellationIndex(i, j + 1)];
 
-                DrawTriangle3D(p00, p10, p11, surfaceColor);
-                DrawTriangle3D(p00, p11, p01, surfaceColor);
+				Vector3 du = p10 - p00;
+				Vector3 dv = p01 - p00;
+
+				Vector3 norm = Vector3Normalize(Vector3CrossProduct(du, dv));
+
+				float brightness = ambientLight + diffuseLight * Vector3DotProduct(norm, CeilingRay);
+
+				Color surfaceColorShaded = ColorBrightness(surfaceColor, brightness); 
+
+
+                DrawTriangle3D(p00, p10, p11, surfaceColorShaded);
+                DrawTriangle3D(p00, p11, p01, surfaceColorShaded);
             }
         }
 
