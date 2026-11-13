@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "ArrayQueue.h"
 #include "curveGenerator.h"
+#include "surfaceGenerator.h"
 #include "interactions.h"
 
 void MoveCameraEvent(Camera& camera);
@@ -20,3 +21,6 @@ void SelectCurveEvent(PointArrayQueue<NURBS_Curve>& ActiveNurbs, Camera& camera)
 
 void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs);
 void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs);
+
+
+void CreateNurbsSurface(PointArrayQueue<NURBS_Surface>& ActiveSurfaces, PointArrayQueue<ControlPoint3D>& ActivePoints, int numberOfControlPointsU, int numberOfControlPointsV, int p, int q);

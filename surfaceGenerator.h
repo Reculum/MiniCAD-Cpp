@@ -170,13 +170,8 @@ public:
 
     NURBS_Surface() = default;
 
-    NURBS_Surface(
-        PointArrayQueue<ControlPoint3D>& ActivePoints,
-        int numberOfControlPointsU,
-        int numberOfControlPointsV,
-        int p,
-        int q,
-        int samplesU = 32,
+    NURBS_Surface(PointArrayQueue<ControlPoint3D>& ActivePoints, int numberOfControlPointsU, int numberOfControlPointsV, int p, int q,
+		int samplesU = 32,
         int samplesV = 32
     ) {
 

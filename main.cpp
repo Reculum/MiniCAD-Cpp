@@ -5,6 +5,7 @@
 
 #include "interactions.h"
 #include "curveGenerator.h"
+#include "surfaceGenerator.h"
 #include "ArrayQueue.h"
 
 int main()
@@ -32,6 +33,7 @@ int main()
 
 	PointArrayQueue<ControlPoint3D> ActivePoints = PointArrayQueue<ControlPoint3D>();
 	PointArrayQueue<NURBS_Curve> ActiveNurbs = PointArrayQueue<NURBS_Curve>();
+	PointArrayQueue<NURBS_Surface> ActiveSurfaces = PointArrayQueue<NURBS_Surface>();
 	
 
     // Main loop
@@ -41,6 +43,7 @@ int main()
 
 		CreatePointEvent(ActivePoints);
 		CreateNurbsCurve(ActiveNurbs, ActivePoints, 2);
+		CreateNurbsSurface(ActiveSurfaces, ActivePoints, 3, 3, 2, 2);
 
 
 		SelectPointEvent(ActivePoints, camera);
@@ -78,6 +81,9 @@ int main()
 
 				//all the nurbs, so far
 				ActiveNurbs.Plot();
+
+				//all the surfaces, so far
+				ActiveSurfaces.Plot();
 
 				//plot the only NURB
 

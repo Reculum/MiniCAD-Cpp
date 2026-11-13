@@ -8,6 +8,7 @@
 #include "raymath.h"
 
 #include "ArrayQueue.h"
+#include "surfaceGenerator.h"
 #include "curveGenerator.h"
 
 
@@ -55,7 +56,15 @@ void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue
 
 }
 
+void CreateNurbsSurface(PointArrayQueue<NURBS_Surface>& ActiveSurfaces, PointArrayQueue<ControlPoint3D>& ActivePoints, int numberOfControlPointsU, int numberOfControlPointsV, int p, int q
+){
+	if (IsKeyPressed(KEY_V)){
 
+		NURBS_Surface* tmpSurface = new NURBS_Surface(ActivePoints, numberOfControlPointsU, numberOfControlPointsV, p, q);
+		ActiveSurfaces.Append(*tmpSurface);
+	}
+
+}
 
 
 void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
@@ -209,77 +218,6 @@ void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
 
 
-
-
-
-void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
-
-	if (IsKeyDown(KEY_M)){
-
-		float halfSize = 5.0f;
-
-		std::vector<int> indexesToBeMoved = ActivePoints.FindSelectedPoints();
-
-		if (indexesToBeMoved.size() < 1){std::cout << "no points to be moved!!!" << std::endl; return;}
-		if (indexesToBeMoved.size() >= 2){std::cout << "you are trying to move too many points!!!" << std::endl; return;}
-
-		ControlPoint3D& p = ActivePoints.getItem( indexesToBeMoved[0] );
-		Vector2 mousePos = GetMousePosition();
-		Ray mouseRay = GetScreenToWorldRay(mousePos, camera);
-
-		Vector3 newPos;
-		float PlaneCenterX = p.getCoords().x;
-		float PlaneCenterZ = p.getCoords().z;
-		float PlaneCenterY = p.getCoords().y;
-
-		if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT)){
-			
-			GLOBAL_MOVING_TRACKER.ComputeXY = false;
-			GLOBAL_MOVING_TRACKER.ComputeXZ = true;
-
-			GLOBAL_MOVING_TRACKER.A = {PlaneCenterX + halfSize, PlaneCenterY, PlaneCenterZ - halfSize};
-			GLOBAL_MOVING_TRACKER.B = {PlaneCenterX + halfSize, PlaneCenterY, PlaneCenterZ + halfSize};
-			GLOBAL_MOVING_TRACKER.C = {PlaneCenterX - halfSize, PlaneCenterY, PlaneCenterZ + halfSize};
-			GLOBAL_MOVING_TRACKER.D = {PlaneCenterX - halfSize, PlaneCenterY, PlaneCenterZ - halfSize};
-		}
-
-
-		if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)){
-			
-			GLOBAL_MOVING_TRACKER.ComputeXY = true;
-			GLOBAL_MOVING_TRACKER.ComputeXZ = false;
-
-			GLOBAL_MOVING_TRACKER.A = {PlaneCenterX + halfSize, PlaneCenterY + halfSize, PlaneCenterZ};
-			GLOBAL_MOVING_TRACKER.B = {PlaneCenterX + halfSize, PlaneCenterY - halfSize, PlaneCenterZ};
-			GLOBAL_MOVING_TRACKER.C = {PlaneCenterX - halfSize, PlaneCenterY - halfSize, PlaneCenterZ};
-			GLOBAL_MOVING_TRACKER.D = {PlaneCenterX - halfSize, PlaneCenterY + halfSize, PlaneCenterZ};
-		}
-
-		if (GLOBAL_MOVING_TRACKER.ComputeXY){newPos = ComputeMouseRayXYintersection(mouseRay, p);}
-		if (GLOBAL_MOVING_TRACKER.ComputeXZ){newPos = ComputeMouseRayXZintersection(mouseRay, p);}
-
-		if (GLOBAL_MOVING_TRACKER.ComputeXZ || GLOBAL_MOVING_TRACKER.ComputeXY){
-
-			DrawTriangle3D(GLOBAL_MOVING_TRACKER.C, GLOBAL_MOVING_TRACKER.B, GLOBAL_MOVING_TRACKER.D, Fade(SKYBLUE, 0.25f));
-			DrawTriangle3D(GLOBAL_MOVING_TRACKER.A, GLOBAL_MOVING_TRACKER.D, GLOBAL_MOVING_TRACKER.B, Fade(SKYBLUE, 0.25f));
-
-			DrawSphere(newPos, 0.05f, (Color) RED);
-
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-				p.Move(newPos);
-			}
-		}
-
-	}
-	else{
-		GLOBAL_MOVING_TRACKER.ComputeXY = false;
-		GLOBAL_MOVING_TRACKER.ComputeXZ = false;
-	}
-
-
-}
-
-
 void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
 	if ( (IsKeyDown(KEY_LEFT_SHIFT)) && (IsKeyPressed(KEY_W)) ){
@@ -373,7 +311,72 @@ Vector3 ComputeMouseRayXYintersection(Ray MouseRay, ControlPoint3D p){
 	return interCoords;
 }
 
+void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& camera){
 
+	if (IsKeyDown(KEY_M)){
+
+		float halfSize = 5.0f;
+
+		std::vector<int> indexesToBeMoved = ActivePoints.FindSelectedPoints();
+
+		if (indexesToBeMoved.size() < 1){std::cout << "no points to be moved!!!" << std::endl; return;}
+		if (indexesToBeMoved.size() >= 2){std::cout << "you are trying to move too many points!!!" << std::endl; return;}
+
+		ControlPoint3D& p = ActivePoints.getItem( indexesToBeMoved[0] );
+		Vector2 mousePos = GetMousePosition();
+		Ray mouseRay = GetScreenToWorldRay(mousePos, camera);
+
+		Vector3 newPos;
+		float PlaneCenterX = p.getCoords().x;
+		float PlaneCenterZ = p.getCoords().z;
+		float PlaneCenterY = p.getCoords().y;
+
+		if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT)){
+			
+			GLOBAL_MOVING_TRACKER.ComputeXY = false;
+			GLOBAL_MOVING_TRACKER.ComputeXZ = true;
+
+			GLOBAL_MOVING_TRACKER.A = {PlaneCenterX + halfSize, PlaneCenterY, PlaneCenterZ - halfSize};
+			GLOBAL_MOVING_TRACKER.B = {PlaneCenterX + halfSize, PlaneCenterY, PlaneCenterZ + halfSize};
+			GLOBAL_MOVING_TRACKER.C = {PlaneCenterX - halfSize, PlaneCenterY, PlaneCenterZ + halfSize};
+			GLOBAL_MOVING_TRACKER.D = {PlaneCenterX - halfSize, PlaneCenterY, PlaneCenterZ - halfSize};
+		}
+
+
+		if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)){
+			
+			GLOBAL_MOVING_TRACKER.ComputeXY = true;
+			GLOBAL_MOVING_TRACKER.ComputeXZ = false;
+
+			GLOBAL_MOVING_TRACKER.A = {PlaneCenterX + halfSize, PlaneCenterY + halfSize, PlaneCenterZ};
+			GLOBAL_MOVING_TRACKER.B = {PlaneCenterX + halfSize, PlaneCenterY - halfSize, PlaneCenterZ};
+			GLOBAL_MOVING_TRACKER.C = {PlaneCenterX - halfSize, PlaneCenterY - halfSize, PlaneCenterZ};
+			GLOBAL_MOVING_TRACKER.D = {PlaneCenterX - halfSize, PlaneCenterY + halfSize, PlaneCenterZ};
+		}
+
+		if (GLOBAL_MOVING_TRACKER.ComputeXY){newPos = ComputeMouseRayXYintersection(mouseRay, p);}
+		if (GLOBAL_MOVING_TRACKER.ComputeXZ){newPos = ComputeMouseRayXZintersection(mouseRay, p);}
+
+		if (GLOBAL_MOVING_TRACKER.ComputeXZ || GLOBAL_MOVING_TRACKER.ComputeXY){
+
+			DrawTriangle3D(GLOBAL_MOVING_TRACKER.C, GLOBAL_MOVING_TRACKER.B, GLOBAL_MOVING_TRACKER.D, Fade(SKYBLUE, 0.25f));
+			DrawTriangle3D(GLOBAL_MOVING_TRACKER.A, GLOBAL_MOVING_TRACKER.D, GLOBAL_MOVING_TRACKER.B, Fade(SKYBLUE, 0.25f));
+
+			DrawSphere(newPos, 0.05f, (Color) RED);
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+				p.Move(newPos);
+			}
+		}
+
+	}
+	else{
+		GLOBAL_MOVING_TRACKER.ComputeXY = false;
+		GLOBAL_MOVING_TRACKER.ComputeXZ = false;
+	}
+
+
+}
 
 
 
