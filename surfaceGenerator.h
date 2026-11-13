@@ -30,8 +30,8 @@ protected:
     int tessellationU = 32;
     int tessellationV = 32;
 
-	float ambientLight = 0.8f;
-	float diffuseLight = 0.2f;
+	float ambientLight = 0.0f;
+	float diffuseLight = 1.0f;
 	Vector3 CeilingRay = {0.0f, 0.0f, 1.0f};
 
     int TotTimesUpdated = 0;
