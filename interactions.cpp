@@ -91,6 +91,67 @@ void SelectPointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& cam
 
 }
 
+void SelectCurveEvent(PointArrayQueue<NURBS_Curve>& ActiveNurbs, Camera& camera){
+
+	if ( (IsKeyDown(KEY_LEFT_SHIFT)) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
+
+		Vector2 mousePos = GetMousePosition();
+		Ray mouseRay = GetScreenToWorldRay(mousePos, camera);
+
+		int clstIdx = -1;
+		float minDist = INFINITY;
+
+		for (int k = 0; k < ActiveNurbs.getSize(); k++){
+
+			NURBS_Curve& tmpNurbs = ActiveNurbs.getItem(k);
+			NURBS_Curve* tmpNurbPtr = &tmpNurbs;
+
+			if (tmpNurbPtr != nullptr){
+
+				std::vector<Vector3> tmpTessellation = tmpNurbs.getTessellation();
+
+				//filter for visible points
+
+				float minTmpNurbsDist = INFINITY;
+
+				for (int j = 0; j < tmpTessellation.size(); j++){
+
+					Vector3 tmpPoint = tmpTessellation[j];
+
+					float t = Vector3DotProduct(tmpPoint - mouseRay.position, mouseRay.direction);
+					float ClstDistance = INFINITY;
+
+					if (t >= 0){ClstDistance = Vector3Length(tmpPoint - mouseRay.position - mouseRay.direction * t);}
+
+					//if we get a hit and the distance is smaller than the one previously recorded
+					if (ClstDistance < minTmpNurbsDist){ minTmpNurbsDist = ClstDistance;}
+
+				}
+
+				if (minTmpNurbsDist < minDist){clstIdx = k; minDist = minTmpNurbsDist;}
+
+
+			}
+			
+
+		}
+
+		//if we ever found a point
+
+		if (clstIdx >= 0){
+			NURBS_Curve& selectedNurbs = ActiveNurbs.getItem(clstIdx);
+			
+			if (selectedNurbs.IsSelected()){selectedNurbs.Unselect();}
+			else{selectedNurbs.Select();}		
+			
+		}
+
+	}
+
+	
+
+}
+
 void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 	if (IsKeyPressed(KEY_DELETE)){

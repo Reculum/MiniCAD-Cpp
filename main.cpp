@@ -38,10 +38,17 @@ int main()
     while (!WindowShouldClose()){
 
 		MoveCameraEvent(camera);
+
 		CreatePointEvent(ActivePoints);
-		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
+
 		CreateNurbsCurve(ActiveNurbs, ActivePoints, 3);
+
+
+		SelectPointEvent(ActivePoints, camera);
+		SelectCurveEvent(ActiveNurbs, camera);
+		
+		
 
         BeginDrawing();
 

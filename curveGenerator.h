@@ -80,6 +80,8 @@ class NURBS_Curve : public GraphicsElement{
 
 	int getDegree(){return degree;}
 
+	std::vector<Vector3> getTessellation(){return Tessellation;}
+
 	int FindInterval(float u){
 
 		//assumes: 0 <= u < 1 !!!
