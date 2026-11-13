@@ -22,9 +22,11 @@ class ControlPoint3D : public GraphicsElement{
 		}
 
 		Vector3 getCoords(){return coords;}
+
+		void Update(){TimesUpdated += 1;}
 		int getTimesUpdated(){return TimesUpdated;}
 
-		void Move(Vector3 newPos){coords = newPos; TimesUpdated += 1;}
+		void Move(Vector3 newPos){coords = newPos; Update();}
 		
 		void ControlPointFromInput(){
 

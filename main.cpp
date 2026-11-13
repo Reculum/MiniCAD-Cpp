@@ -40,13 +40,14 @@ int main()
 		MoveCameraEvent(camera);
 
 		CreatePointEvent(ActivePoints);
+		SelectPointEvent(ActivePoints, camera);
 		RemoveSelectedPoints(ActivePoints);
 
-		CreateNurbsCurve(ActiveNurbs, ActivePoints, 3);
 
-
-		SelectPointEvent(ActivePoints, camera);
+		CreateNurbsCurve(ActiveNurbs, ActivePoints, 2);
 		SelectCurveEvent(ActiveNurbs, camera);
+		ChangePointWeightOnCurve(ActiveNurbs);	
+		
 		
 		
 

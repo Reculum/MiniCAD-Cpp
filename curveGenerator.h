@@ -80,7 +80,11 @@ class NURBS_Curve : public GraphicsElement{
 
 	int getDegree(){return degree;}
 
+	std::vector<float> getWeights(){return weights;}
+	void setWeight(float w, int k){weights[k] = w;}
+
 	std::vector<Vector3> getTessellation(){return Tessellation;}
+	std::vector<ControlPoint3D*> getCtrlPoints(){return CtrlPointsPointers;}
 
 	int FindInterval(float u){
 

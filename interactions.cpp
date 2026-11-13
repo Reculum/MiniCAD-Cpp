@@ -293,3 +293,45 @@ void CreateNurbsCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs, PointArrayQueue
 	}
 
 }
+
+void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
+
+	if ( (IsKeyDown(KEY_LEFT_SHIFT)) && (IsKeyPressed(KEY_W)) ){
+
+		std::vector<int> CurvesSelected = ActiveNurbs.FindSelectedPoints();
+
+		if (CurvesSelected.size() != 1){std::cout << "you have either selected too many curves or no curve!!!" << std::endl; return;}
+
+		NURBS_Curve& selectedNurbsCurve = ActiveNurbs.getItem(CurvesSelected[0]);
+		std::vector<ControlPoint3D*> CtrlPoints = selectedNurbsCurve.getCtrlPoints();
+
+		int SelectedCtrlPointIndex = -1;
+		int nCtrlPointsSelected = 0;
+
+		for (int k = 0; k < CtrlPoints.size(); k++){
+
+			if (CtrlPoints[k] -> IsSelected()){SelectedCtrlPointIndex = k; nCtrlPointsSelected += 1;}
+		}
+
+
+		if (nCtrlPointsSelected != 1){std::cout << "you have either selected too many ctrl points or no ctrl point!!!" << std::endl; return;}
+
+
+		float newWeight = 0.0f;
+
+		std::cout << "new weight: ";
+		std::cin >> newWeight;
+
+		if (newWeight <= 0){std::cout << "you have inserted a non-positive weight!!!" << std::endl; return;}
+
+		ControlPoint3D* selectedCtrlPoint = CtrlPoints[SelectedCtrlPointIndex];
+
+		selectedNurbsCurve.setWeight(newWeight, SelectedCtrlPointIndex);
+		selectedCtrlPoint -> Update();	
+
+
+	}
+
+
+
+}
