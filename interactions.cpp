@@ -28,7 +28,7 @@ MovingTracker GLOBAL_MOVING_TRACKER;
 
 
 
-void MoveCameraEvent(Camera& camera){if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){UpdateCamera(&camera, CAMERA_FREE);}}
+void MoveCameraEvent(Camera& camera){if (IsKeyDown(KEY_TAB)){UpdateCamera(&camera, CAMERA_FREE);}}
 
 void CreatePointEvent(PointArrayQueue<ControlPoint3D>& ActivePoints){
 	
@@ -273,7 +273,7 @@ void MoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints, Camera& c
 
 			DrawSphere(newPos, 0.05f, (Color) RED);
 
-			if (IsKeyPressed(KEY_ENTER)){
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
 				p.Move(newPos);
 			}
 		}
