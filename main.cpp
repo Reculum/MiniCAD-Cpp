@@ -43,15 +43,18 @@ int main()
 
 		CreatePointEvent(ActivePoints);
 		CreateNurbsCurve(ActiveNurbs, ActivePoints, 2);
-		CreateNurbsSurface(ActiveSurfaces, ActivePoints, 3, 3, 2, 2);
+		CreateNurbsSurface(ActiveSurfaces, ActivePoints, 2, 3, 1, 2);
 
 
 		SelectPointEvent(ActivePoints, camera);
-		SelectCurveEvent(ActiveNurbs, camera);		
+		SelectCurveEvent(ActiveNurbs, camera);
+		SelectSurfaceEvent(ActiveSurfaces, camera);		
 		
 		ChangePointWeightOnCurve(ActiveNurbs);
+		ChangePointWeightOnSurface(ActiveSurfaces);
 		
 		
+		RemoveSelectedSurfaces(ActiveSurfaces);
 		RemoveSelectedCurves(ActiveNurbs);
 		RemoveSelectedPoints(ActivePoints);
 		

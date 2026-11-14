@@ -211,7 +211,9 @@ public:
         weights.resize(expectedNumberOfPoints, 1.0f);
 
         for (int selectedIndex : selectedPoints) {
+
             CtrlPointsPointers.push_back(&ActivePoints.getItem(selectedIndex));
+
         }
 
         NodesU = BuildOpenUniformKnotVector(controlPointsU, degreeU);
@@ -221,8 +223,10 @@ public:
         ComputeTessellation();
 
         for (ControlPoint3D* point : CtrlPointsPointers) {
-            point->MarkAsBelongingToCurve();
+
+            point->MarkAsBelongingToSurface();
             TotTimesUpdated += point->getTimesUpdated();
+
         }
     }
 

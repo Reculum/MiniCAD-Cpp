@@ -13,6 +13,7 @@ class ControlPoint3D : public GraphicsElement{
 		int TimesUpdated = 0;
 
 		bool BelongsToCurve = false;
+		bool BelongsToSurface = false;
 
 	public:
 
@@ -31,6 +32,10 @@ class ControlPoint3D : public GraphicsElement{
 		void MarkAsBelongingToCurve(){BelongsToCurve = true;}
 		void MarkAsNotBelongingToCurve(){BelongsToCurve = false;}
 		bool IsItBelongingToCurve(){return BelongsToCurve;}
+
+		void MarkAsBelongingToSurface(){BelongsToSurface = true;}
+		void MarkAsNotBelongingToSurface(){BelongsToSurface = false;}
+		bool IsItBelongingToSurface(){return BelongsToSurface;}
 
 		void Move(Vector3 newPos){coords = newPos; Update();}
 		

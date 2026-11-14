@@ -174,7 +174,66 @@ void SelectCurveEvent(PointArrayQueue<NURBS_Curve>& ActiveNurbs, Camera& camera)
 
 }
 
+void SelectSurfaceEvent(PointArrayQueue<NURBS_Surface>& ActiveSurfaces, Camera& camera){
 
+	if ( (IsKeyDown(KEY_LEFT_CONTROL)) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
+
+		Vector2 mousePos = GetMousePosition();
+		Ray mouseRay = GetScreenToWorldRay(mousePos, camera);
+
+		int clstIdx = -1;
+		float minDist = INFINITY;
+
+		for (int k = 0; k < ActiveSurfaces.getSize(); k++){
+
+			NURBS_Surface& tmpSurf = ActiveSurfaces.getItem(k);
+			NURBS_Surface* tmpSurfPtr = &tmpSurf;
+
+			if (tmpSurfPtr != nullptr){
+
+				std::vector<Vector3> tmpTessellation = tmpSurf.getTessellation();
+
+				//filter for visible points
+
+				float minTmpNurbsDist = INFINITY;
+
+				for (int j = 0; j < tmpTessellation.size(); j++){
+
+					Vector3 tmpPoint = tmpTessellation[j];
+
+					float t = Vector3DotProduct(tmpPoint - mouseRay.position, mouseRay.direction);
+					float ClstDistance = INFINITY;
+
+					if (t >= 0){ClstDistance = Vector3Length(tmpPoint - mouseRay.position - mouseRay.direction * t);}
+
+					//if we get a hit and the distance is smaller than the one previously recorded
+					if (ClstDistance < minTmpNurbsDist){ minTmpNurbsDist = ClstDistance;}
+
+				}
+
+				if (minTmpNurbsDist < minDist){clstIdx = k; minDist = minTmpNurbsDist;}
+
+
+			}
+			
+
+		}
+
+		//if we ever found a point
+
+		if (clstIdx >= 0){
+			NURBS_Surface& selectedSurf = ActiveSurfaces.getItem(clstIdx);
+			
+			if (selectedSurf.IsSelected()){selectedSurf.Unselect();}
+			else{selectedSurf.Select();}		
+			
+		}
+
+	}
+
+	
+
+}
 
 
 
@@ -186,10 +245,12 @@ void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 		for (int k = 0; k < indexesToBeDeleted.size(); k++){
 
-			if (!ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToCurve()){
+			if ( !( (ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToCurve()) &&
+			      (ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToSurface()) ) ){
+
 				ActivePoints.RemoveItem(indexesToBeDeleted[k]);
 			}
-			else{std::cout << "The point can't be deleted! It belongs to a Curve!!!" << std::endl;}			
+			else{std::cout << "The point can't be deleted! It belongs to a Curve or a Surface!!!" << std::endl;}			
 		}
 	}
 
@@ -215,6 +276,25 @@ void RemoveSelectedCurves(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
 }
 
+void RemoveSelectedSurfaces(PointArrayQueue<NURBS_Surface>& ActiveSurfaces){
+
+	if (IsKeyPressed(KEY_DELETE)){
+		
+		std::vector<int> indexesToBeDeleted = ActiveSurfaces.FindSelectedPoints();
+
+		for (int k = 0; k < indexesToBeDeleted.size(); k++){
+
+			NURBS_Surface& tmpCurve = ActiveSurfaces.getItem(indexesToBeDeleted[k]);
+
+			std::vector<ControlPoint3D*> tmpCtrlPoints = tmpCurve.getCtrlPoints();
+
+			for (int j = 0; j < tmpCtrlPoints.size(); j++){tmpCtrlPoints[j] -> MarkAsNotBelongingToSurface();}
+
+			ActiveSurfaces.RemoveItem(indexesToBeDeleted[k]);
+		}
+	}
+
+}
 
 
 
@@ -259,6 +339,51 @@ void ChangePointWeightOnCurve(PointArrayQueue<NURBS_Curve>& ActiveNurbs){
 
 
 }
+
+void ChangePointWeightOnSurface(PointArrayQueue<NURBS_Surface>& ActiveSurface){
+
+	if ( (IsKeyDown(KEY_LEFT_CONTROL)) && (IsKeyPressed(KEY_W)) ){
+
+		std::vector<int> SurfacesSelected = ActiveSurface.FindSelectedPoints();
+
+		if (SurfacesSelected.size() != 1){std::cout << "you have either selected too many surfaces or no surface!!!" << std::endl; return;}
+
+		NURBS_Surface& selectedNurbsSurface = ActiveSurface.getItem(SurfacesSelected[0]);
+		std::vector<ControlPoint3D*> CtrlPoints = selectedNurbsSurface.getCtrlPoints();
+
+		int SelectedCtrlPointIndex = -1;
+		int nCtrlPointsSelected = 0;
+
+		for (int k = 0; k < CtrlPoints.size(); k++){
+
+			if (CtrlPoints[k] -> IsSelected()){SelectedCtrlPointIndex = k; nCtrlPointsSelected += 1;}
+		}
+
+
+		if (nCtrlPointsSelected != 1){std::cout << "you have either selected too many ctrl points or no ctrl point!!!" << std::endl; return;}
+
+
+		float newWeight = 0.0f;
+
+		std::cout << "new weight: ";
+		std::cin >> newWeight;
+
+		if (newWeight <= 0){std::cout << "you have inserted a non-positive weight!!!" << std::endl; return;}
+
+		ControlPoint3D* selectedCtrlPoint = CtrlPoints[SelectedCtrlPointIndex];
+
+		int Selected_U_index = SelectedCtrlPointIndex / selectedNurbsSurface.getControlPointsV();
+		int Selected_V_index = SelectedCtrlPointIndex % selectedNurbsSurface.getControlPointsV();
+
+		selectedNurbsSurface.setWeight(newWeight, Selected_U_index, Selected_V_index);
+		selectedCtrlPoint -> Update();
+
+	}
+
+
+
+}
+
 
 
 Vector3 ComputeMouseRayXZintersection(Ray MouseRay, ControlPoint3D p){
