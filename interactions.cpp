@@ -245,8 +245,8 @@ void RemoveSelectedPoints(PointArrayQueue<ControlPoint3D>& ActivePoints){
 
 		for (int k = 0; k < indexesToBeDeleted.size(); k++){
 
-			if ( !( (ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToCurve()) &&
-			      (ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToSurface()) ) ){
+			if ( ( !(ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToCurve()) &&
+			      !(ActivePoints.getItem(indexesToBeDeleted[k]).IsItBelongingToSurface()) ) ){
 
 				ActivePoints.RemoveItem(indexesToBeDeleted[k]);
 			}
